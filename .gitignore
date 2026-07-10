@@ -162,6 +162,7 @@ MANIFEST
 venv/
 env/
 ENV/
+face-env/
 
 # ── Node (웹 프론트가 붙는 경우) ────────────────────────────────────────────
 node_modules/
@@ -183,6 +184,13 @@ yarn-error.log*
 *.pb
 *.tflite
 *.caffemodel
+
+# ── AI Perception 로컬 런타임 자산 ───────────────────────────────────────────
+# 등록 얼굴 embedding은 개인정보를 포함한다. 모델과 학습 산출물은 별도 스토리지로 배포한다.
+registered_faces/
+*.npy
+.insightface/
+yolo_test/runs/
 
 # ── 데이터셋 / 캡쳐 / 증거 사진 ─────────────────────────────────────────────
 datasets/
