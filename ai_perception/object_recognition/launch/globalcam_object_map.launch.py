@@ -17,6 +17,8 @@ def generate_launch_description():
     event_topic = LaunchConfiguration("event_topic")
     alert_topic = LaunchConfiguration("alert_topic")
     server_object_event_topic = LaunchConfiguration("server_object_event_topic")
+    turtlebot_goal_topic = LaunchConfiguration("turtlebot_goal_topic")
+    turtlebot_goal_offset_x = LaunchConfiguration("turtlebot_goal_offset_x")
     annotated_topic = LaunchConfiguration("annotated_topic")
     live_topic = LaunchConfiguration("live_topic")
     live_compressed = LaunchConfiguration("live_compressed")
@@ -104,6 +106,11 @@ def generate_launch_description():
                 default_value="/globalcam/server/object_events",
             ),
             DeclareLaunchArgument(
+                "turtlebot_goal_topic",
+                default_value="/globalcam/turtlebot_goal/coordinates",
+            ),
+            DeclareLaunchArgument("turtlebot_goal_offset_x", default_value="0.3"),
+            DeclareLaunchArgument(
                 "annotated_topic",
                 default_value="/globalcam/combined/annotated_image",
             ),
@@ -141,7 +148,7 @@ def generate_launch_description():
             DeclareLaunchArgument("proximity_enter_distance", default_value="0.2"),
             DeclareLaunchArgument("proximity_exit_distance", default_value="0.3"),
             DeclareLaunchArgument("server_required_consecutive", default_value="10"),
-            DeclareLaunchArgument("server_required_duration_sec", default_value="10.0"),
+            DeclareLaunchArgument("server_required_duration_sec", default_value="5.0"),
             DeclareLaunchArgument("server_pixel_tolerance", default_value="80.0"),
             DeclareLaunchArgument("server_detection_gap_sec", default_value="5.0"),
             DeclareLaunchArgument("server_track_stale_sec", default_value="12.0"),
@@ -234,6 +241,10 @@ def generate_launch_description():
                     alert_topic,
                     "--server-object-event-topic",
                     server_object_event_topic,
+                    "--turtlebot-goal-topic",
+                    turtlebot_goal_topic,
+                    "--turtlebot-goal-offset-x",
+                    turtlebot_goal_offset_x,
                     "--enable-safety-detector",
                     enable_safety_detector,
                     "--enable-turtlebot-proximity",
