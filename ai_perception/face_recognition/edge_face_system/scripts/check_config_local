@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG_PATH="${CONFIG_PATH:-${1:-/home/gyul/robot_face_system/config/edge_local.yaml}}"
+
+exec /home/gyul/face-env/bin/python - "$CONFIG_PATH" <<'PY'
+import sys
+from pathlib import Path
+from urllib.parse import urlparse
+
+import yaml
+
+
+config_path = Path(sys.argv[1])
+errors = []
+warnings = []
+
+
+def fail(message):
+    errors.append(message)
+
+
+def warn(message):
+    warnings.append(message)
+
+
+def get(config, dotted_path, default=None):
+    value = config
+    for key in dotted_path.split("."):
+        if not isinstance(value, dict) or key not in value:
+            return default
+        value = value[key]
+    return value
+
+
+def require_string(config, dotted_path):
+    value = get(config, dotted_path)
+    if not isinstance(value, str) or not value.strip():
+        fail(f"{dotted_path} is required and must be a non-empty string")
+        return None
+    return value.strip()
+
+
+def require_int_range(config, dotted_path, minimum, maximum):
+    value = get(config, dotted_path)
+    if isinstance(value, bool):
+        fail(f"{dotted_path} must be an integer")
+        return None
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        fail(f"{dotted_path} must be an integer")
+        return None
+    if parsed < minimum or parsed > maximum:
+        fail(f"{dotted_path} must be between {minimum} and {maximum}")
+    return parsed
+
+
+def require_float_range(config, dotted_path, minimum, maximum):
+    value = get(config, dotted_path)
+    if isinstance(value, bool):
+        fail(f"{dotted_path} must be a number")
+        return None
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        fail(f"{dotted_path} must be a number")
+        return None
+    if parsed < minimum or parsed > maximum:
+        fail(f"{dotted_path} must be between {minimum} and {maximum}")
+    return parsed
+
+
+def require_bool(config, dotted_path, default=None):
+    value = get(config, dotted_path, default)
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"true", "1", "yes", "on"}:
+            return True
+        if normalized in {"false", "0", "no", "off"}:
+            return False
+    if value is None and default is not None:
+        return bool(default)
+    fail(f"{dotted_path} must be a boolean")
+    return None
+
+
+def validate_topic(name, topic):
+    if topic is None:
+        return
+    if not topic.startswith("/"):
+        fail(f"{name} must start with '/'")
+    if "//" in topic:
+        fail(f"{name} must not contain '//'")
+    if any(ch.isspace() for ch in topic):
+        fail(f"{name} must not contain whitespace")
+
+
+def validate_parent_dir(name, value):
+    if value is None:
+        return
+    path = Path(value).expanduser()
+    parent = path.parent
+    if not parent.exists():
+        warn(f"{name} parent directory does not exist yet: {parent}")
+    elif not parent.is_dir():
+        fail(f"{name} parent is not a directory: {parent}")
+
+
+def require_choice(config, dotted_path, choices, default=None):
+    value = get(config, dotted_path, default)
+    if value is None:
+        fail(f"{dotted_path} is required")
+        return None
+    normalized = str(value).strip().lower()
+    if normalized not in choices:
+        fail(f"{dotted_path} must be one of: {', '.join(sorted(choices))}")
+        return None
+    return normalized
+
+
+if not config_path.exists():
+    fail(f"config file not found: {config_path}")
+    config = {}
+else:
+    try:
+        loaded = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    except yaml.YAMLError as exc:
+        fail(f"invalid YAML: {exc}")
+        loaded = {}
+    except OSError as exc:
+        fail(f"cannot read config: {exc}")
+        loaded = {}
+    if loaded is None:
+        loaded = {}
+    if not isinstance(loaded, dict):
+        fail("top-level config must be a YAML mapping")
+        loaded = {}
+    config = loaded
+
+
+device_id = require_string(config, "device.id")
+image_topic = require_string(config, "ros.image_topic")
+depth_topic = require_string(config, "ros.depth_topic")
+state_topic = require_string(config, "ros.state_topic")
+annotated_topic = require_string(config, "ros.annotated_topic")
+
+for name, topic in [
+    ("ros.image_topic", image_topic),
+    ("ros.depth_topic", depth_topic),
+    ("ros.state_topic", state_topic),
+    ("ros.annotated_topic", annotated_topic),
+]:
+    validate_topic(name, topic)
+
+port = require_int_range(config, "ui.port", 1, 65535)
+host = require_string(config, "ui.host")
+snapshot_path = require_string(config, "ui.snapshot_path")
+snapshot_fps = require_float_range(config, "ui.snapshot_fps", 0, 60)
+snapshot_quality = require_int_range(config, "ui.snapshot_quality", 1, 100)
+publish_topics = require_bool(config, "realsense.publish_topics", True)
+input_mode = require_choice(config, "perception.input_mode", {"ros", "direct_realsense"}, "ros")
+server_url = require_string(config, "server.url")
+
+if server_url:
+    parsed = urlparse(server_url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        fail("server.url must be a valid http(s) URL")
+    elif host and port and parsed.hostname in {"127.0.0.1", "localhost"} and parsed.port and parsed.port != port:
+        warn(f"server.url port {parsed.port} differs from ui.port {port}")
+
+det_size = require_int_range(config, "perception.det_size", 64, 1280)
+emit_interval = require_float_range(config, "perception.emit_interval", 0.01, 10.0)
+person_detector = require_string(config, "perception.person_detector")
+if person_detector and person_detector not in {"none", "yolo"}:
+    warn("perception.person_detector is usually 'none' or 'yolo'")
+
+session_timeout = require_int_range(config, "auth.session_timeout_sec", 1, 300)
+duplicate_block = require_int_range(config, "auth.duplicate_block_sec", 0, 3600)
+min_similarity = require_float_range(config, "auth.min_similarity", 0.0, 1.0)
+min_pad_score = require_float_range(config, "auth.min_pad_score", 0.0, 1.0)
+
+queue_path = require_string(config, "uploader.queue_path")
+local_log_path = require_string(config, "uploader.local_log_path")
+
+for name, value in [
+    ("ui.snapshot_path", snapshot_path),
+    ("uploader.queue_path", queue_path),
+    ("uploader.local_log_path", local_log_path),
+]:
+    validate_parent_dir(name, value)
+
+print(f"Config: {config_path}")
+for message in warnings:
+    print(f"[WARN] {message}")
+
+if errors:
+    for message in errors:
+        print(f"[FAIL] {message}")
+    print(f"Config validation failed with {len(errors)} error(s).")
+    raise SystemExit(1)
+
+print("[OK] device.id:", device_id)
+print("[OK] ros.image_topic:", image_topic)
+print("[OK] ros.depth_topic:", depth_topic)
+print("[OK] ros.state_topic:", state_topic)
+print("[OK] ros.annotated_topic:", annotated_topic)
+print("[OK] ui.host:", host)
+print("[OK] ui.port:", port)
+print("[OK] ui.snapshot_path:", snapshot_path)
+print("[OK] ui.snapshot_fps:", snapshot_fps)
+print("[OK] ui.snapshot_quality:", snapshot_quality)
+print("[OK] realsense.publish_topics:", str(publish_topics).lower())
+print("[OK] perception.input_mode:", input_mode)
+print("[OK] auth.session_timeout_sec:", session_timeout)
+print("[OK] auth.duplicate_block_sec:", duplicate_block)
+print("[OK] auth.min_similarity:", min_similarity)
+print("[OK] auth.min_pad_score:", min_pad_score)
+print("Config validation passed.")
+PY

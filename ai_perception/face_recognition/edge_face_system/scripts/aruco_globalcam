@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -eo pipefail
+if [ -f /opt/ros/jazzy/setup.bash ]; then
+  source /opt/ros/jazzy/setup.bash
+fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_DIR"
+PYTHONPATH="$PROJECT_DIR:${PYTHONPATH:-}" "$HOME/face-env/bin/python" -m pc_side.aruco_detector_node \
+  --image-topic "${ARUCO_IMAGE_TOPIC:-/globalcam/image_raw/compressed}" \
+  --dictionary "${ARUCO_DICTIONARY:-4x4_50}" \
+  --window-name "${ARUCO_WINDOW_NAME:-ArUco-GlobalCam}" \
+  --max-width "${ARUCO_MAX_WIDTH:-960}" \
+  "$@"

@@ -1,0 +1,16 @@
+/home/gyul/robot_face_system/logs/*.log
+data/*events.jsonl
+data/attendance_records.jsonl {
+    daily
+    maxsize 20M
+    rotate 30
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    dateext
+    dateformat -%Y%m%d-%s
+    create 0644 gyul gyul
+    su gyul gyul
+}

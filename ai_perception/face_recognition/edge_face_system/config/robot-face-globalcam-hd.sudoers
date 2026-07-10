@@ -1,0 +1,2 @@
+# Allow the user service to create only the GlobalCam HD loopback device.
+gyul ALL=(root) NOPASSWD: /usr/sbin/modprobe v4l2loopback devices=1 video_nr=55 card_label=DroidCam-HD exclusive_caps=0 max_width=1920 max_height=1080

@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PREFERRED="${1:-auto}"
+
+find_droidcam_device() {
+  local listing=""
+  listing="$(v4l2-ctl --list-devices 2>/dev/null || true)"
+  if [[ -z "$listing" ]]; then
+    return 1
+  fi
+  printf '%s\n' "$listing" | awk '''
+    BEGIN { in_droidcam = 0 }
+    /^[^[:space:]].*:/ {
+      in_droidcam = (tolower($0) ~ /droidcam|v4l2loopback/)
+      next
+    }
+    in_droidcam && $1 ~ /^\/dev\/video[0-9]+$/ {
+      print $1
+      exit
+    }
+  '''
+}
+
+device_card_type() {
+  local device="$1"
+  v4l2-ctl --device="$device" --all 2>/dev/null | awk -F: '''
+    $1 ~ /^[[:space:]]*Card type[[:space:]]*$/ {
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2)
+      print tolower($2)
+      exit
+    }
+  '''
+}
+
+if [[ "$PREFERRED" == "auto" || -z "$PREFERRED" ]]; then
+  DEVICE="$(find_droidcam_device)"
+else
+  if [[ ! -e "$PREFERRED" ]]; then
+    echo "DroidCam video device not found: $PREFERRED" >&2
+    echo "Run first: /home/gyul/droidcam-env/scripts/setup-kernel.sh" >&2
+    exit 1
+  fi
+
+  CARD_TYPE="$(device_card_type "$PREFERRED")"
+  if [[ "$CARD_TYPE" == *droidcam* || "$CARD_TYPE" == *v4l2loopback* ]]; then
+    DEVICE="$PREFERRED"
+  else
+    DEVICE="$(find_droidcam_device)"
+  fi
+fi
+
+if [[ -z "${DEVICE:-}" ]]; then
+  echo "DroidCam virtual video device was not found." >&2
+  echo "Current video devices:" >&2
+  v4l2-ctl --list-devices >&2 || true
+  echo "Run first: /home/gyul/droidcam-env/scripts/setup-kernel.sh" >&2
+  exit 1
+fi
+
+echo "$DEVICE"

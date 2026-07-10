@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SERVICE_NAME="robot-face-attendance.service"
+SERVICE_SRC="/home/gyul/robot_face_system/systemd/$SERVICE_NAME"
+SERVICE_DST="/etc/systemd/system/$SERVICE_NAME"
+
+if [ ! -f "$SERVICE_SRC" ]; then
+  echo "Service file not found: $SERVICE_SRC" >&2
+  exit 1
+fi
+
+mkdir -p /home/gyul/robot_face_system/logs /home/gyul/robot_face_system/data
+sudo install -m 0644 "$SERVICE_SRC" "$SERVICE_DST"
+sudo systemctl daemon-reload
+sudo systemctl enable "$SERVICE_NAME"
+
+cat <<EOF
+Installed and enabled $SERVICE_NAME.
+
+Start:
+  sudo systemctl start $SERVICE_NAME
+
+Status:
+  sudo systemctl status $SERVICE_NAME
+
+Logs:
+  journalctl -u $SERVICE_NAME -n 100 --no-pager
+  tail -n 100 /home/gyul/robot_face_system/logs/systemd_attendance.log
+EOF

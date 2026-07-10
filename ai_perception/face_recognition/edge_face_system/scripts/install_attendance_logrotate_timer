@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SERVICE_NAME="robot-face-attendance-logrotate.service"
+TIMER_NAME="robot-face-attendance-logrotate.timer"
+SRC_DIR="/home/gyul/robot_face_system/systemd"
+
+sudo install -m 0644 "$SRC_DIR/$SERVICE_NAME" "/etc/systemd/system/$SERVICE_NAME"
+sudo install -m 0644 "$SRC_DIR/$TIMER_NAME" "/etc/systemd/system/$TIMER_NAME"
+sudo systemctl daemon-reload
+sudo systemctl enable --now "$TIMER_NAME"
+
+cat <<EOF_INSTALL
+Installed and started $TIMER_NAME.
+
+Policy:
+  run logrotate every 10 minutes
+  rotate daily, or earlier when files exceed 20MB
+
+Status:
+  systemctl status $TIMER_NAME --no-pager
+  systemctl list-timers $TIMER_NAME --no-pager
+EOF_INSTALL

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOGROTATE_SRC="/home/gyul/robot_face_system/systemd/robot-face-attendance.logrotate"
+LOGROTATE_DST="/etc/logrotate.d/robot-face-attendance"
+
+if [ ! -f "$LOGROTATE_SRC" ]; then
+  echo "Logrotate config not found: $LOGROTATE_SRC" >&2
+  exit 1
+fi
+
+if ! command -v logrotate >/dev/null 2>&1; then
+  echo "logrotate command not found" >&2
+  exit 1
+fi
+
+mkdir -p /home/gyul/robot_face_system/logs /home/gyul/robot_face_system/data
+sudo install -m 0644 "$LOGROTATE_SRC" "$LOGROTATE_DST"
+sudo logrotate -d "$LOGROTATE_DST" >/dev/null
+
+cat <<EOF_INSTALL
+Installed logrotate config:
+  $LOGROTATE_DST
+
+Policy:
+  frequency: daily, and earlier if size >= 20M
+  retention: 30 rotated files
+  compression: gzip, delayed by one rotation
+  mode: copytruncate, so running processes do not need restart
+
+Test:
+  sudo logrotate -d $LOGROTATE_DST
+
+Force rotate now:
+  sudo logrotate -f $LOGROTATE_DST
+EOF_INSTALL

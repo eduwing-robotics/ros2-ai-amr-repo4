@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -eo pipefail
+if [ -f /opt/ros/jazzy/setup.bash ]; then
+  source /opt/ros/jazzy/setup.bash
+fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_DIR"
+
+ARGS=("$@")
+for ((i = 0; i < ${#ARGS[@]}; i++)); do
+  if [[ "${ARGS[$i]}" == "--camera" && $((i + 1)) -lt ${#ARGS[@]} ]]; then
+    if [[ "${ARGS[$((i + 1))]}" == "auto" ]]; then
+      ARGS[$((i + 1))]="$($SCRIPT_DIR/resolve_droidcam_video_device auto)"
+    fi
+  fi
+done
+
+PYTHON_BIN="${ROBOT_FACE_PYTHON:-python3}"
+PYTHONPATH="$PROJECT_DIR:${PYTHONPATH:-}" "$PYTHON_BIN" -m robot_side.camera_publisher "${ARGS[@]}"

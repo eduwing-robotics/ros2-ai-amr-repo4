@@ -1,0 +1,293 @@
+#!/usr/bin/env bash
+set -u
+
+CONFIG_PATH="${CONFIG_PATH:-/home/gyul/robot_face_system/config/edge_local.yaml}"
+INPUT_MODE_ENV="${PERCEPTION_INPUT_MODE:-}"
+PUBLISH_TOPICS_ENV="${PUBLISH_REALSENSE_TOPICS:-}"
+CONFIG_VALUES="$(/home/gyul/face-env/bin/python - "$CONFIG_PATH" <<'PY_CONFIG'
+import sys
+from pathlib import Path
+import yaml
+
+def get(config, path, default):
+    value = config
+    for key in path.split('.'):
+        if not isinstance(value, dict) or key not in value:
+            return default
+        value = value[key]
+    return value
+
+try:
+    config = yaml.safe_load(Path(sys.argv[1]).read_text(encoding='utf-8')) or {}
+except FileNotFoundError:
+    config = {}
+host = get(config, 'ui.host', '127.0.0.1')
+port = get(config, 'ui.port', 8090)
+server_url = get(config, 'server.url', f'http://{host}:{port}')
+input_mode = str(get(config, 'perception.input_mode', 'ros')).strip().lower()
+print(f"SERVER_URL={server_url}")
+print(f"SNAPSHOT_PATH={get(config, 'ui.snapshot_path', '/tmp/robot_face_annotated.jpg')}")
+print(f"PUBLISH_REALSENSE_TOPICS={'true' if get(config, 'realsense.publish_topics', True) in (True, 'true', 'True', 1, '1', 'yes', 'on') else 'false'}")
+print(f"PERCEPTION_INPUT_MODE={input_mode if input_mode in {'ros', 'direct_realsense'} else 'ros'}")
+print(f"COLOR_TOPIC={get(config, 'ros.image_topic', '/camera/camera/color/image_raw')}")
+print(f"DEPTH_TOPIC={get(config, 'ros.depth_topic', '/camera/camera/aligned_depth_to_color/image_raw')}")
+print(f"ANNOTATED_TOPIC={get(config, 'ros.annotated_topic', '/face/annotated_image')}")
+print(f"STATE_TOPIC={get(config, 'ros.state_topic', '/face/recognition_state')}")
+PY_CONFIG
+)"
+eval "$CONFIG_VALUES"
+CONFIG_PERCEPTION_INPUT_MODE="${PERCEPTION_INPUT_MODE:-ros}"
+CONFIG_PUBLISH_REALSENSE_TOPICS="${PUBLISH_REALSENSE_TOPICS:-true}"
+SERVER_URL="${SERVER_URL_OVERRIDE:-${SERVER_URL:-http://127.0.0.1:8090}}"
+SNAPSHOT_PATH="${SNAPSHOT_PATH_OVERRIDE:-${SNAPSHOT_PATH:-/tmp/robot_face_annotated.jpg}}"
+PERCEPTION_INPUT_MODE="${PERCEPTION_INPUT_MODE_OVERRIDE:-${INPUT_MODE_ENV:-${CONFIG_PERCEPTION_INPUT_MODE}}}"
+PUBLISH_REALSENSE_TOPICS="${PUBLISH_TOPICS_ENV:-${CONFIG_PUBLISH_REALSENSE_TOPICS}}"
+
+warn=0
+
+section() {
+  printf '\n== %s ==\n' "$1"
+}
+
+pass() {
+  printf '[OK] %s\n' "$1"
+}
+
+fail() {
+  printf '[FAIL] %s\n' "$1"
+  warn=$((warn + 1))
+}
+
+section "Config"
+if CONFIG_PATH="$CONFIG_PATH" /home/gyul/robot_face_system/scripts/check_config_local; then
+  pass "$CONFIG_PATH"
+else
+  fail "$CONFIG_PATH validation failed"
+fi
+pass "perception input mode: $PERCEPTION_INPUT_MODE"
+
+if [[ "$PERCEPTION_INPUT_MODE" == "direct_realsense" ]]; then
+  EXPECTED_PROCESSES=(
+    "robot_face_perception_realsense|pc_side.perception_realsense_node"
+    "face_system_server.py"
+    "robot_face_result_uploader|pc_side.result_uploader_node"
+  )
+else
+  EXPECTED_PROCESSES=(
+    "robot_realsense_publisher|robot_side.realsense_publisher"
+    "robot_face_perception|pc_side.perception_node"
+    "face_system_server.py"
+    "robot_face_result_uploader|pc_side.result_uploader_node"
+  )
+fi
+
+section "RealSense"
+REALSENSE_SERIAL="${REALSENSE_SERIAL:-254622071666}"
+if command -v rs-enumerate-devices >/dev/null 2>&1; then
+  RS_OUTPUT="$(rs-enumerate-devices -s 2>/dev/null || true)"
+  if [[ -n "$RS_OUTPUT" ]]; then
+    pass "rs-enumerate-devices -s returned device info"
+    printf '%s\n' "$RS_OUTPUT" | sed 's/^/  /'
+  else
+    fail "rs-enumerate-devices -s returned no devices"
+  fi
+  if [[ -n "$REALSENSE_SERIAL" ]]; then
+    if printf '%s\n' "$RS_OUTPUT" | grep -q "$REALSENSE_SERIAL"; then
+      pass "expected RealSense serial present: $REALSENSE_SERIAL"
+    else
+      fail "expected RealSense serial missing: $REALSENSE_SERIAL"
+    fi
+  fi
+else
+  fail "rs-enumerate-devices command not found"
+fi
+
+if command -v lsusb >/dev/null 2>&1; then
+  if lsusb -t 2>/dev/null | grep -Eiq "5000M|20000M"; then
+    if lsusb 2>/dev/null | grep -Eiq "8086:0b07|RealSense|Intel Corp. RealSense"; then
+      pass "RealSense D435 visible on USB tree (USB3 path likely)"
+    else
+      fail "USB3 path present but RealSense D435 not listed in lsusb"
+    fi
+  else
+    fail "RealSense D435 not seen on a USB3 (5000M) path in lsusb -t"
+  fi
+else
+  fail "lsusb command not found"
+fi
+
+section "Processes"
+for pattern in "${EXPECTED_PROCESSES[@]}"; do
+  if pgrep -af "$pattern" >/dev/null 2>&1; then
+    pass "$pattern"
+  else
+    fail "$pattern not running"
+  fi
+done
+
+if [[ "$PERCEPTION_INPUT_MODE" == "direct_realsense" ]]; then
+  if pgrep -af "robot_realsense_publisher|robot_side.realsense_publisher" >/dev/null 2>&1; then
+    fail "robot_realsense_publisher should not run in direct_realsense mode"
+  else
+    pass "robot_realsense_publisher not running (direct_realsense mode)"
+  fi
+  if pgrep -af "robot_face_perception|pc_side.perception_node" >/dev/null 2>&1; then
+    fail "legacy ROS perception should not run in direct_realsense mode"
+  else
+    pass "legacy ROS perception not running (direct_realsense mode)"
+  fi
+  if DIRECT_CMD="$(ps -eo cmd | rg "robot_face_perception_realsense|pc_side.perception_realsense_node" | rg -v rg | head -1)" && [[ -n "$DIRECT_CMD" ]]; then
+    pass "direct RealSense perception running"
+    for pair in "snapshot-output:--snapshot-output" "snapshot-fps:--snapshot-fps" "snapshot-quality:--snapshot-quality"; do
+      label="${pair%%:*}"
+      flag="${pair##*:}"
+      value="$(printf '%s' "$DIRECT_CMD" | rg -o -- "${flag} [^ ]+" | head -1 || true)"
+      if [[ -n "$value" ]]; then
+        pass "direct perception ${value}"
+      else
+        fail "direct perception missing ${flag}"
+      fi
+    done
+  else
+    fail "direct RealSense perception command not found"
+  fi
+elif pgrep -af "/scripts/robot_face_annotated_snapshot|pc_side.annotated_snapshot_node" 2>/dev/null | rg -v "pgrep|check_attendance_local" | rg -q .; then
+  pass "legacy snapshot node running"
+elif RS_CMD="$(ps -eo cmd | rg "robot_realsense_publisher|robot_side.realsense_publisher" | rg -v rg | head -1)" && [[ -n "$RS_CMD" ]] && printf '%s' "$RS_CMD" | rg -q -- "--snapshot-output"; then
+  pass "RealSense publisher direct snapshot enabled"
+  for pair in "snapshot-output:--snapshot-output" "snapshot-fps:--snapshot-fps" "snapshot-quality:--snapshot-quality" "publish-image-topics:--publish-image-topics"; do
+    label="${pair%%:*}"
+    flag="${pair##*:}"
+    value="$(printf '%s' "$RS_CMD" | rg -o -- "${flag} [^ ]+" | head -1 || true)"
+    if [[ -n "$value" ]]; then
+      pass "RealSense publisher ${value}"
+    else
+      fail "RealSense publisher missing ${flag}"
+    fi
+  done
+else
+  fail "no snapshot source (legacy node or RealSense --snapshot-output required)"
+fi
+
+section "Snapshot"
+if [ -s "$SNAPSHOT_PATH" ]; then
+  bytes="$(stat -c '%s' "$SNAPSHOT_PATH" 2>/dev/null || printf '?')"
+  modified="$(stat -c '%y' "$SNAPSHOT_PATH" 2>/dev/null || printf '?')"
+  pass "$SNAPSHOT_PATH exists (${bytes} bytes, modified ${modified})"
+else
+  fail "$SNAPSHOT_PATH is missing or empty"
+fi
+
+if python3 - "$SERVER_URL/api/face/status" <<'PY_FACE_STATUS'
+import json
+import sys
+import urllib.request
+
+url = sys.argv[1]
+with urllib.request.urlopen(url, timeout=2.0) as response:
+    payload = json.loads(response.read().decode("utf-8"))
+snapshot = payload.get("snapshot") or {}
+print(json.dumps(snapshot, ensure_ascii=False))
+if not snapshot.get("ready") or snapshot.get("stale"):
+    raise SystemExit(1)
+PY_FACE_STATUS
+then
+  pass "$SERVER_URL/api/face/status"
+else
+  fail "$SERVER_URL/api/face/status reports missing or stale snapshot"
+fi
+
+section "UI Server"
+if python3 - "$SERVER_URL/api/status" <<'PY_STATUS'
+import json
+import sys
+import urllib.request
+
+url = sys.argv[1]
+with urllib.request.urlopen(url, timeout=2.0) as response:
+    payload = json.loads(response.read().decode("utf-8"))
+if not payload.get("ok"):
+    raise SystemExit(1)
+print(json.dumps(payload, ensure_ascii=False))
+PY_STATUS
+then
+  pass "$SERVER_URL/api/status"
+else
+  fail "$SERVER_URL/api/status is not reachable"
+fi
+
+section "ROS Topics"
+if [ -f /opt/ros/jazzy/setup.bash ]; then
+  set +u
+  # shellcheck disable=SC1091
+  source /opt/ros/jazzy/setup.bash
+  set -u
+fi
+
+topic_list="$(timeout 3 ros2 topic list 2>/dev/null || true)"
+if [ -z "$topic_list" ]; then
+  fail "ros2 topic list returned no topics"
+else
+  if [[ "$PERCEPTION_INPUT_MODE" == "direct_realsense" ]]; then
+    pass "raw RealSense topics not required (direct_realsense mode)"
+    for topic in "$COLOR_TOPIC" "$DEPTH_TOPIC"; do
+      if printf '%s\n' "$topic_list" | grep -Fxq "$topic"; then
+        fail "$topic present but not expected in direct_realsense mode"
+      else
+        pass "$topic absent (expected)"
+      fi
+    done
+  elif [ "$PUBLISH_REALSENSE_TOPICS" = "true" ]; then
+    raw_topics=("$COLOR_TOPIC" "$DEPTH_TOPIC")
+  else
+    raw_topics=()
+    pass "raw RealSense topics optional (realsense.publish_topics=false)"
+  fi
+  for topic in ${raw_topics[@]+"${raw_topics[@]}"} "$STATE_TOPIC"; do
+    if printf '%s\n' "$topic_list" | grep -Fxq "$topic"; then
+      pass "$topic"
+    else
+      fail "$topic missing"
+    fi
+  done
+fi
+
+section "Log Rotation"
+if command -v logrotate >/dev/null 2>&1; then
+  pass "logrotate installed"
+else
+  fail "logrotate command not found"
+fi
+
+if [ -f /etc/logrotate.d/robot-face-attendance ]; then
+  pass "/etc/logrotate.d/robot-face-attendance installed"
+else
+  fail "/etc/logrotate.d/robot-face-attendance missing"
+fi
+
+LOG_SIZE_WARN_BYTES=$((25 * 1024 * 1024))
+for log_file in \
+  /home/gyul/robot_face_system/logs/systemd_attendance.log \
+  data/recognition_events.jsonl \
+  data/uploader_events.jsonl \
+  data/attendance_records.jsonl; do
+  if [ -f "$log_file" ]; then
+    size="$(stat -c '%s' "$log_file" 2>/dev/null || printf 0)"
+    if [ "$size" -gt "$LOG_SIZE_WARN_BYTES" ]; then
+      fail "$log_file is larger than 25MB (${size} bytes)"
+    else
+      pass "$log_file size ${size} bytes"
+    fi
+  else
+    pass "$log_file not created yet"
+  fi
+done
+
+section "Result"
+if [ "$warn" -eq 0 ]; then
+  printf 'Local attendance stack looks healthy.\n'
+  exit 0
+fi
+
+printf 'Local attendance stack has %s warning(s).\n' "$warn"
+exit 1

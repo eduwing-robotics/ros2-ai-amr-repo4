@@ -1,0 +1,100 @@
+device:
+  id: edge-dev-001
+ros:
+  image_topic: /camera/camera/color/image_raw
+  depth_topic: /camera/camera/aligned_depth_to_color/image_raw
+  state_topic: /face/recognition_state
+  annotated_topic: /face/annotated_image
+realsense:
+  color_profile: 424x240x15
+  depth_profile: 480x270x15
+  publish_topics: true
+perception:
+  input_mode: ros
+  det_size: 320
+  onnx_threads: 1
+  emit_interval: 0.1
+  process_fps: 3.0
+  person_detector: none
+  crop_width_ratio: 0.75
+  crop_height_ratio: 1.0
+ui:
+  host: 127.0.0.1
+  port: 8090
+  snapshot_path: /tmp/robot_face_annotated.jpg
+  snapshot_fps: 15
+  snapshot_quality: 82
+server:
+  enabled: true
+  url: http://127.0.0.1:8000
+  token: 
+  
+  employees_face_registry_path: /api/v1/employees/face-registry
+  employee_state_path: /api/v1/employees/{employee_number}/attendance-state
+  attendance_records_path: /api/v1/attendance/records
+  face_registration_path: /api/v1/employees/face-registration
+  visitors_qr_registry_path: /api/v1/visitors/qr-registry
+  visitor_state_path: /api/v1/visitors/{visitor_number}/access-state
+  visitor_records_path: /api/v1/attendance/visitor-access/records
+  visitor_inside_path: /api/v1/visitors/inside
+auth:
+  session_timeout_sec: 15
+  duplicate_block_sec: 30
+  min_similarity: 0.7
+  min_pad_score: 0.6
+uploader:
+  queue_path: data/pending_events.sqlite
+  local_log_path: data/uploader_events.jsonl
+  server_url: http://127.0.0.1:8090
+  session_url: http://127.0.0.1:8090
+  session_path: /api/attendance/session
+  only_active_session: true
+cctv:
+  camera: auto
+  camera_index: auto
+  droidcam:
+    enabled: true
+    mode: usb
+    video_device: auto
+    wifi_ip: 192.168.0.10
+    wifi_port: 4747
+    adb_port: 4747
+    adb_serial: __auto__
+    size: 640x480
+  topic: /globalcam/image_raw/compressed
+  frame_id: globalcam
+  server_url: ''
+  camera_id: globalcam-001
+  images_path: /api/v1/cctv/images
+  interval_sec: 3.0
+  width: 640
+  height: 480
+  fps: 10
+  camera_fps: 10
+  jpeg_quality: 80
+  topic_jpeg_quality: 75
+  timeout_sec: 3.0
+  frame_read_retries: 10
+  frame_retry_sleep: 0.05
+  last_image_path: /tmp/globalcam_cctv_latest.jpg
+  local_log_path: data/cctv_sender_events.jsonl
+  dry_run: false
+  viewer_enabled: true
+  viewer_window_name: GlobalCam-CCTV
+  viewer_max_width: 960
+face_viewer:
+  enabled: false
+  window_name: Face-Recognition
+  max_width: 960
+
+barrier:
+  enabled: true
+  mac: 90:15:06:E4:30:7A
+  status_handle: '0x002a'
+  open_handle: '0x0030'
+  close_handle: '0x0032'
+  trigger_payload: '2441414141'
+  auto_close_seconds: 3.0
+admin:
+  password_hash: 
+  session_timeout_min: 30

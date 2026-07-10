@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -u
+
+MAC="${BARRIER_MAC:-90:15:06:E4:30:7A}"
+HANDLE="${BARRIER_OPEN_HANDLE:-0x0030}"
+PAYLOAD="${BARRIER_PAYLOAD:-2453544f50}"
+ATTEMPTS="${BARRIER_STOP_ATTEMPTS:-5}"
+SLEEP_SECONDS="${BARRIER_STOP_SLEEP_SECONDS:-1}"
+GATT_TIMEOUT="${BARRIER_GATT_TIMEOUT:-3}"
+
+for attempt in $(seq 1 "$ATTEMPTS"); do
+  if timeout "$GATT_TIMEOUT" gatttool -b "$MAC" --char-write-req -a "$HANDLE" -n "$PAYLOAD"; then
+    echo "barrier STOP sent to $MAC handle=$HANDLE"
+    exit 0
+  fi
+  sleep "$SLEEP_SECONDS"
+done
+
+echo "barrier STOP was not sent; device may already be unavailable/green: $MAC" >&2
+exit 1

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_DIR"
+
+PYTHON_BIN="${ROBOT_FACE_PYTHON:-/home/gyul/face-env/bin/python}"
+PYTHONPATH="$PROJECT_DIR:${PYTHONPATH:-}" "$PYTHON_BIN" -m robot_side.udp_camera_sender "$@"

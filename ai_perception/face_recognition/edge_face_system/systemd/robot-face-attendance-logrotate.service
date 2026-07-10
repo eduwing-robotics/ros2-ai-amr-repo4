@@ -1,0 +1,8 @@
+[Unit]
+Description=Rotate Robot Face Attendance Logs
+
+[Service]
+Type=oneshot
+User=gyul
+Group=gyul
+ExecStart=/home/gyul/robot_face_system/scripts/rotate_attendance_logs
