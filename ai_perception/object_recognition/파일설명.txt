@@ -1,0 +1,36 @@
+객체인식 파트 파일 안내
+==========================
+
+이 폴더는 글로벌캠(UDP 5005)과 터틀봇 카메라(UDP 5006)의 YOLO 객체인식 런처와 실행 모듈을 담는다. 터틀봇 safety 노드가 이름 결과를 payload에 포함할 수 있어, 최소한의 안면인식 의존 파일도 함께 포함한다.
+
+[launch]
+- turtlebot_safety.launch.py: 터틀봇 UDP 표시 노드와 safety YOLO/안면 ROI 결과 노드를 실행한다.
+- globalcam_object_map.launch.py: 글로벌캠 UDP 표시, safety YOLO, TurtleBot YOLO, 맵 좌표/근접 감지 노드를 실행한다.
+
+[scripts]
+- globalcam_udp_display_node, turtlebot_udp_display_node: ROS Jazzy와 Python 환경을 준비한 후 UDP 표시 모듈을 실행하는 래퍼다.
+- globalcam_yolo_result_node, turtlebot_safety_result_node: YOLO 결과 모듈을 실행하는 래퍼다.
+
+[pc_side 공통]
+- __init__.py: pc_side Python 패키지 표식자다.
+- ros_image_utils.py: ROS Image/CompressedImage와 OpenCV 영상 변환 헬퍼다.
+- globalcam_combined_detector_node.py: UDP 프레임 재조립, QoS, safety/TurtleBot 결합 파이프라인의 공통 기능을 제공한다.
+- globalcam_combined_threaded_detector_node.py: UDP 수신, YOLO 추론, annotated 발행을 스레드로 분리한 결합 감지 노드다.
+
+[pc_side 객체인식]
+- globalcam_udp_display_node.py: UDP 5005 영상을 수신하여 화면에 표시하고 ROS 토픽으로 발행한다.
+- globalcam_yolo_result_node.py: 글로벌캠 safety/TurtleBot YOLO 결과와 서버 이벤트를 발행한다.
+- globalcam_object_map_node.py: safety 클래스 처리, 맵 이벤트, 서버 전송용 객체 이벤트를 생성한다.
+- globalcam_turtlebot_proximity_node.py: 글로벌캠에서 TurtleBot 위치와 근접 상태를 계산한다.
+- turtlebot_udp_display_node.py: UDP 5006 영상에 safety 감지 박스를 오버레이하고 ROS 토픽으로 발행한다.
+- turtlebot_safety_result_node.py: 터틀봇 safety YOLO, 화재/낙상/미착용 이벤트, 서버 safety 이벤트를 처리한다.
+- map_line_reference.py: ArUco 기준 맵 라인과 홈로그래피 좌표 인증 기능을 제공한다.
+
+[pc_side 안면인식 의존]
+- face_recognize_webcam.py: 등록된 얼굴 embedding을 로드하고 유사도 기반으로 신원을 판정한다.
+- perception_node.py: InsightFace FaceAnalysis 앱을 생성하는 공통 안면인식 기능을 제공한다.
+- safety_identity_node.py: 연속 프레임 투표로 안면인식 결과를 안정화한다.
+
+[Git 포함 범위]
+- 코드와 런처, 런타임 의존 모듈만 추가한다.
+- YOLO .pt 가중치, registered_faces, InsightFace 모델 캐시, 로그, 가상환경, 학습 결과물은 제외한다.
