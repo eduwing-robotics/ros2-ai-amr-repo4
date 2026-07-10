@@ -192,6 +192,12 @@ registered_faces/
 .insightface/
 yolo_test/runs/
 
+# Face-recognition edge runtime state. Keep the example configuration tracked.
+ai_perception/face_recognition/edge_face_system/config/edge_local.yaml
+ai_perception/face_recognition/edge_face_system/data/
+ai_perception/face_recognition/edge_face_system/logs/
+ai_perception/face_recognition/edge_face_system/face_registry.json
+
 # ── 데이터셋 / 캡쳐 / 증거 사진 ─────────────────────────────────────────────
 datasets/
 captures/

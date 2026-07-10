@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pkill -TERM -f '/home/gyul/droidcam-env/bin/droidcam-cli' 2>/dev/null || true
+pkill -TERM -f '/home/gyul/robot_face_system/scripts/droidcam_connector' 2>/dev/null || true
+pkill -TERM -f 'robot_side.camera_publisher.*globalcam' 2>/dev/null || true
+pkill -TERM -f 'pc_side.image_viewer.*GlobalCam-DroidCam' 2>/dev/null || true
+
+echo "GlobalCam DroidCam processes stopped."

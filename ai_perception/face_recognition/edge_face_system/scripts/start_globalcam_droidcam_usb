@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ADB_SERIAL="${DROIDCAM_ADB_SERIAL:-__auto__}"
+ADB_PORT="${DROIDCAM_ADB_PORT:-4747}"
+VIDEO_DEVICE="${DROIDCAM_VIDEO_DEVICE:-auto}"
+TOPIC="${GLOBALCAM_TOPIC:-/globalcam/image_raw/compressed}"
+LOG_DIR="${LOG_DIR:-/home/gyul/robot_face_system/logs}"
+mkdir -p "$LOG_DIR"
+export ROBOT_FACE_PYTHON="${ROBOT_FACE_PYTHON:-/home/gyul/face-env/bin/python}"
+DROIDCAM_PID=""
+PUBLISHER_PID=""
+VIEWER_PID=""
+
+VIDEO_DEVICE="$(/home/gyul/robot_face_system/scripts/resolve_droidcam_video_device "$VIDEO_DEVICE")"
+echo "Using DroidCam video device: $VIDEO_DEVICE"
+
+source /home/gyul/droidcam-env/bin/activate >/dev/null
+if ! adb devices | grep -q "^${ADB_SERIAL}[[:space:]]\+device"; then
+  echo "ADB device is not ready: $ADB_SERIAL" >&2
+  adb devices -l >&2
+  exit 1
+fi
+
+set +u
+# shellcheck disable=SC1091
+source /opt/ros/jazzy/setup.bash
+set -u
+
+/home/gyul/robot_face_system/scripts/droidcam_connector   --mode usb   --adb-serial "$ADB_SERIAL"   --adb-port "$ADB_PORT"   --video-device "$VIDEO_DEVICE"   >"$LOG_DIR/globalcam_droidcam_connector.log" 2>&1 &
+DROIDCAM_PID=$!
+
+cleanup() {
+  for pid in "$VIEWER_PID" "$PUBLISHER_PID" "$DROIDCAM_PID"; do
+    if [[ -n "$pid" ]]; then
+      kill "$pid" 2>/dev/null || true
+      wait "$pid" 2>/dev/null || true
+    fi
+  done
+}
+trap cleanup EXIT INT TERM
+
+sleep 2
+if ! kill -0 "$DROIDCAM_PID" 2>/dev/null; then
+  echo "DroidCam connector failed:" >&2
+  tail -n 40 "$LOG_DIR/globalcam_droidcam_connector.log" >&2 || true
+  exit 1
+fi
+
+/home/gyul/robot_face_system/scripts/robot_camera_publisher   --camera "$VIDEO_DEVICE"   --topic "$TOPIC"   --frame-id globalcam   --width 640   --height 480   --fps 10   --compressed   --jpeg-quality 65   >"$LOG_DIR/globalcam_droidcam_publisher.log" 2>&1 &
+PUBLISHER_PID=$!
+
+sleep 2
+if ! kill -0 "$PUBLISHER_PID" 2>/dev/null; then
+  echo "GlobalCam publisher failed:" >&2
+  tail -n 40 "$LOG_DIR/globalcam_droidcam_publisher.log" >&2 || true
+  exit 1
+fi
+
+echo "GlobalCam DroidCam USB started."
+echo "Topic: $TOPIC"
+echo "Viewer window: GlobalCam-DroidCam"
+
+/home/gyul/robot_face_system/scripts/robot_face_viewer   --topic "$TOPIC"   --window-name GlobalCam-DroidCam   --max-width 960 &
+VIEWER_PID=$!
+
+wait "$VIEWER_PID"

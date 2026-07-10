@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOGROTATE_CONF="/home/gyul/robot_face_system/systemd/robot-face-attendance.logrotate"
+STATE_FILE="data/logrotate.status"
+
+if ! command -v logrotate >/dev/null 2>&1; then
+  echo "logrotate command not found" >&2
+  exit 1
+fi
+
+mkdir -p /home/gyul/robot_face_system/logs /home/gyul/robot_face_system/data
+
+if [ "${1:-}" = "--dry-run" ]; then
+  exec logrotate -d -s "$STATE_FILE" "$LOGROTATE_CONF"
+fi
+
+if [ "${1:-}" = "--force" ]; then
+  exec logrotate -f -s "$STATE_FILE" "$LOGROTATE_CONF"
+fi
+
+exec logrotate -s "$STATE_FILE" "$LOGROTATE_CONF"

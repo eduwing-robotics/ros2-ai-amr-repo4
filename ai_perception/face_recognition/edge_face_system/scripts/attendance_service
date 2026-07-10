@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SERVICE_NAME="robot-face-attendance.service"
+
+case "${1:-status}" in
+  install)
+    exec /home/gyul/robot_face_system/scripts/install_attendance_service
+    ;;
+  install-user)
+    exec /home/gyul/robot_face_system/scripts/install_attendance_user_service
+    ;;
+  start|stop|restart|enable|disable)
+    exec sudo systemctl "$1" "$SERVICE_NAME"
+    ;;
+  status)
+    exec systemctl status "$SERVICE_NAME" --no-pager
+    ;;
+  check-config)
+    exec /home/gyul/robot_face_system/scripts/check_config_local "${2:-}"
+    ;;
+  logs)
+    exec journalctl -u "$SERVICE_NAME" -n "${2:-100}" --no-pager
+    ;;
+  install-logrotate)
+    exec /home/gyul/robot_face_system/scripts/install_attendance_logrotate
+    ;;
+  install-logrotate-timer)
+    exec /home/gyul/robot_face_system/scripts/install_attendance_logrotate_timer
+    ;;
+  rotate-logs)
+    exec /home/gyul/robot_face_system/scripts/rotate_attendance_logs "${2:-}"
+    ;;
+  user-start|user-stop|user-restart|user-enable|user-disable)
+    action="${1#user-}"
+    exec systemctl --user "$action" "$SERVICE_NAME"
+    ;;
+  user-status)
+    exec systemctl --user status "$SERVICE_NAME" --no-pager
+    ;;
+  user-logs)
+    exec journalctl --user -u "$SERVICE_NAME" -n "${2:-100}" --no-pager
+    ;;
+  tail)
+    exec tail -n "${2:-100}" /home/gyul/robot_face_system/logs/systemd_attendance.log
+    ;;
+  *)
+    cat <<EOF_HELP
+Usage: attendance_service <command>
+
+System service commands:
+  install      Install and enable the system-level service. Requires sudo.
+  start        Start the system service. Requires sudo.
+  stop         Stop the system service. Requires sudo.
+  restart      Restart the system service. Requires sudo.
+  status       Show system service status.
+  check-config [PATH]
+              Validate edge_local.yaml before launch.
+  logs [N]     Show recent system journal logs.
+  install-logrotate
+              Install daily log rotation policy. Requires sudo.
+  install-logrotate-timer
+              Install 10-minute log rotation timer. Requires sudo.
+  rotate-logs [--dry-run|--force]
+              Run local log rotation manually.
+  enable       Enable system boot auto-start. Requires sudo.
+  disable      Disable system boot auto-start. Requires sudo.
+
+User service commands:
+  install-user Install and enable the user-level service. No sudo.
+  user-start   Start the user service.
+  user-stop    Stop the user service.
+  user-restart Restart the user service.
+  user-status  Show user service status.
+  user-logs [N]
+              Show recent user journal logs.
+  user-enable  Enable user service auto-start for this user session.
+  user-disable Disable user service auto-start for this user session.
+
+Log file:
+  tail [N]     Show recent file logs.
+EOF_HELP
+    exit 2
+    ;;
+esac

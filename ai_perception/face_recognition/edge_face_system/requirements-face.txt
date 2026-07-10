@@ -1,0 +1,6 @@
+# Create face-env with system site packages so ROS 2 Jazzy remains available.
+insightface==1.0.1
+onnxruntime==1.26.0
+opencv-python==4.13.0.92
+pyrealsense2==2.58.1.10581
+

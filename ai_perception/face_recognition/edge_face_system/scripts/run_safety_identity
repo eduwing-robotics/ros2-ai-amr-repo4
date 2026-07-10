@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -f /opt/ros/jazzy/setup.bash ]; then
+  set +u
+  # shellcheck disable=SC1091
+  source /opt/ros/jazzy/setup.bash
+  set -u
+fi
+
+exec ros2 launch /home/gyul/robot_face_system/launch/safety_identity.launch.py \
+  start_globalcam:="${START_GLOBALCAM:-false}" \
+  start_droidcam:="${START_DROIDCAM:-${START_GLOBALCAM:-false}}" \
+  droidcam_mode:="${DROIDCAM_MODE:-usb}" \
+  droidcam_video_device:="${DROIDCAM_VIDEO_DEVICE:-auto}" \
+  droidcam_wifi_ip:="${DROIDCAM_WIFI_IP:-192.168.0.10}" \
+  droidcam_wifi_port:="${DROIDCAM_WIFI_PORT:-4747}" \
+  droidcam_adb_port:="${DROIDCAM_ADB_PORT:-4747}" \
+  droidcam_adb_serial:="${DROIDCAM_ADB_SERIAL:-__auto__}" \
+  camera:="${GLOBALCAM_CAMERA:-${DROIDCAM_VIDEO_DEVICE:-auto}}" \
+  show_viewer:="${SHOW_VIEWER:-true}" \
+  global_image_topic:="${GLOBAL_IMAGE_TOPIC:-/globalcam/image_raw/compressed}" \
+  robot_image_topic:="${ROBOT_IMAGE_TOPIC:-/robot/picam/image_raw}" \
+  detector_model_path:="${DETECTOR_MODEL_PATH:-/home/gyul/yolo_test/models/hardhat_turtlebot_best.pt}" \
+  detector_device:="${DETECTOR_DEVICE:-auto}"

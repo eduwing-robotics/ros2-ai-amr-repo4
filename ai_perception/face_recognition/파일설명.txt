@@ -1,0 +1,95 @@
+안면인식 파트 파일 안내
+========================
+
+이 폴더는 노트북/엣지 PC에서 운영하는 ROS2 기반 안면인식 출입 시스템을 담는다.
+실제 운영 데이터, 등록 얼굴 DB, 모델 가중치, 로그는 개인정보와 대용량 파일이므로 Git에 포함하지 않는다.
+
+[최상위]
+- README.md: face_recognition 영역의 포함/제외 범위와 운영 설정 방법을 설명한다.
+- 파일설명.txt: 이 파일. 안면인식 시스템에 포함된 주요 파일과 역할을 요약한다.
+- edge_face_system/: 실제 엣지 안면인식 시스템 코드, 런처, 문서, systemd 템플릿을 담는 폴더다.
+
+[edge_face_system]
+- README.md: 엣지 안면인식 시스템 실행 방법, 설정 방법, UDP 수신 버퍼 권장값을 정리한다.
+- requirements-face.txt: face-env에 설치해야 하는 Python 의존성 목록이다.
+- robot_face_system/__init__.py: Python 패키지 표식자다.
+
+[edge_face_system/config]
+- edge_local.example.yaml: 운영 설정 예시 파일이다. 실제 운영 시 edge_local.yaml로 복사한 뒤 서버 URL, 토큰, 장치 ID, 카메라, 데이터 경로를 현장에 맞게 수정한다.
+- robot-face-globalcam-hd.sudoers: GlobalCam HD loopback 생성 등에 필요한 sudoers 예시 설정이다.
+- edge_local.yaml: 실제 운영 설정 파일이며 Git에 올리지 않는다.
+
+[edge_face_system/launch]
+- attendance_local.launch.py: 로컬 출입 안면인식 전체 플로우를 실행한다. RealSense publisher, perception node, UI server, uploader 등을 묶는다.
+- safety_identity.launch.py: DroidCam/GlobalCam 기반 safety + identity 노드 실행 런처다.
+- aruco_globalcam.launch.py: GlobalCam ArUco 검출 런처다.
+- map_line_globalcam.launch.py: GlobalCam 맵 라인 검출 런처다.
+
+[edge_face_system/robot_side]
+- camera_publisher.py: 로봇 또는 카메라 장치에서 OpenCV로 영상을 읽어 ROS Image 토픽으로 발행한다.
+- realsense_publisher.py: RealSense color/depth 프레임을 ROS 토픽으로 발행하고 UI snapshot을 저장한다.
+- udp_camera_sender.py: DroidCam/GlobalCam 영상을 JPEG로 압축하고 UDP chunk로 나누어 데스크탑에 송신한다.
+- ros_image_utils.py: OpenCV frame과 ROS Image 메시지 변환 헬퍼다.
+- __init__.py: robot_side Python 패키지 표식자다.
+
+[edge_face_system/pc_side]
+- perception_node.py: RGB-D 입력을 받아 얼굴 인식, PAD(depth liveness), 출입 상태 이벤트 생성을 수행한다.
+- perception_realsense_node.py: RealSense 직접 입력 기반 perception 실행 노드다.
+- safety_identity_node.py: safety 감지와 안면인식을 함께 처리하고 연속 프레임 투표로 결과를 안정화한다.
+- result_uploader_node.py: 로컬 인식 이벤트를 서버/API로 업로드하고 실패 시 SQLite 큐에 보관한다.
+- cctv_sender.py: CCTV/GlobalCam JPEG frame을 서버 이미지 API로 전송한다.
+- annotated_snapshot_node.py: annotated image 토픽을 UI용 JPEG snapshot 파일로 저장한다.
+- image_viewer.py: ROS Image 또는 CompressedImage 토픽을 OpenCV 창으로 확인하는 뷰어다.
+- globalcam_receiver.py: GlobalCam ROS 이미지 토픽을 수신하고 최신 JPEG를 저장할 수 있는 보조 노드다.
+- aruco_detector_node.py: GlobalCam 영상에서 ArUco marker를 검출하고 overlay를 표시한다.
+- map_line_detector_node.py: GlobalCam 영상에서 맵 기준 라인을 검출/표시한다.
+- map_line_detection.py: 맵 라인 검출 알고리즘과 overlay 렌더링 로직이다.
+- ros_image_utils.py: PC 쪽 ROS Image/CompressedImage와 OpenCV frame 변환 헬퍼다.
+- __init__.py: pc_side Python 패키지 표식자다.
+
+[edge_face_system/scripts - 실행 래퍼]
+- run_attendance_venv: face-env와 ROS 환경을 준비한 뒤 attendance_local.launch.py를 실행하는 주 실행 스크립트다.
+- start_attendance_venv, stop_attendance_venv: 로컬 사용자 서비스 방식의 안면인식 실행/중지 스크립트다.
+- attendance_service: systemd 서비스 진입점이다.
+- run_attendance_local: 로컬 개발용 출입 시스템 실행 스크립트다.
+- check_attendance_local, check_config_local: 설정, 토픽, API, 로그 상태를 점검하는 진단 스크립트다.
+- robot_face_perception, robot_face_perception_realsense: perception 노드를 실행하는 래퍼다.
+- robot_face_result_uploader: 인식 결과 업로더 실행 래퍼다.
+- robot_face_viewer: 안면인식 annotated image 뷰어 실행 래퍼다.
+- robot_face_annotated_snapshot: annotated snapshot 저장 노드 실행 래퍼다.
+- robot_camera_publisher, robot_realsense_publisher: robot_side 카메라 publisher 실행 래퍼다.
+- robot_udp_camera_sender: UDP 카메라 송신기 실행 래퍼다.
+- start_globalcam_udp_sender, stop_globalcam_droidcam: DroidCam/GlobalCam UDP 송신 시작/중지 스크립트다.
+- start_globalcam_droidcam_usb, droidcam_connector, resolve_droidcam_video_device: DroidCam USB 연결과 video device 자동 탐색을 처리한다.
+- cctv_sender: CCTV image 업로드 송신기 실행 래퍼다.
+- safety_identity_node, safety_identity_viewer, run_safety_identity: safety + identity 플로우 실행/뷰어 스크립트다.
+- aruco_globalcam, aruco_viewer: ArUco 검출/뷰어 실행 스크립트다.
+- map_line_globalcam, map_line_viewer: 맵 라인 검출/뷰어 실행 스크립트다.
+- barrier_stop_once: BLE 차단기/게이트를 1회 닫는 보조 스크립트다.
+- rotate_attendance_logs, install_attendance_logrotate, install_attendance_logrotate_timer: 로컬 이벤트 로그 회전 설정 스크립트다.
+- install_attendance_service, install_attendance_user_service: systemd 서비스 설치 스크립트다.
+
+[edge_face_system/systemd]
+- robot-face-attendance.service: 시스템 단위 systemd 서비스 예시다.
+- robot-face-attendance.user.service: 사용자 단위 systemd 서비스 예시다.
+- robot-face-attendance-logrotate.service, robot-face-attendance-logrotate.timer: 로그 회전용 systemd unit이다.
+- robot-face-attendance.logrotate: logrotate 설정 예시다.
+- .keep: 빈 디렉터리 유지용 파일이다.
+
+[edge_face_system/docs]
+- frontend_backend_api_contract_draft.md: 프론트엔드/백엔드 API 계약 초안이다.
+- server_database_architecture_draft.md: 서버와 DB 구조 초안이다.
+- attendance_database_table_definition.md: 출입 기록 DB 테이블 정의 문서다.
+- current_operation_report.md: 현재 운영 상태와 구성 요약 문서다.
+- local_edge_improvements.md: 로컬 엣지 시스템 개선 사항 정리 문서다.
+- safety_identity_node.md: safety_identity_node 설계와 사용법 문서다.
+- safety_identity_integration_report.md: safety + identity 통합 결과 보고서다.
+- 2026-06-26_realsense_ui_performance_changes.md: RealSense/UI 성능 개선 변경 내역이다.
+- hardhat_turtlebot_model_prep.md, hardhat_turtlebot_pretrain_checklist.md, hardhat_turtlebot_training_commands.md: hardhat/TurtleBot 모델 준비와 학습 관련 문서다.
+
+[Git 제외 대상]
+- edge_face_system/data/: 출입/인식 이벤트, SQLite 큐 등 실제 운영 데이터
+- edge_face_system/logs/: 실행 로그
+- edge_face_system/config/edge_local.yaml: 실제 운영 설정과 토큰/해시/현장 IP가 들어갈 수 있는 파일
+- registered_faces/, face_registry.json: 등록 얼굴 DB와 개인정보
+- *.pt, *.onnx, .insightface/: 모델 가중치와 모델 캐시

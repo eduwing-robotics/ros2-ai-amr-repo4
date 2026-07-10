@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DROIDCAM_ENV="${DROIDCAM_ENV:-/home/gyul/droidcam-env}"
+MODE="${DROIDCAM_MODE:-usb}"
+VIDEO_DEVICE="${DROIDCAM_VIDEO_DEVICE:-auto}"
+WIFI_IP="${DROIDCAM_WIFI_IP:-}"
+WIFI_PORT="${DROIDCAM_WIFI_PORT:-4747}"
+ADB_PORT="${DROIDCAM_ADB_PORT:-4747}"
+ADB_SERIAL="${ANDROID_SERIAL:-${DROIDCAM_ADB_SERIAL:-}}"
+DROIDCAM_SIZE="${DROIDCAM_SIZE:-320x240}"
+
+usage() {
+  cat >&2 <<USAGE
+Usage:
+  droidcam_connector --mode usb [--adb-serial SERIAL] [--adb-port PORT] [--video-device auto|/dev/videoN] [--size 320x240]
+  droidcam_connector --mode wifi --wifi-ip IP [--wifi-port PORT] [--video-device auto|/dev/videoN] [--size 320x240]
+
+Environment overrides:
+  DROIDCAM_MODE=usb|wifi
+  DROIDCAM_VIDEO_DEVICE=auto
+  DROIDCAM_WIFI_IP=192.168.0.10
+  DROIDCAM_WIFI_PORT=4747
+  DROIDCAM_ADB_PORT=4747
+  DROIDCAM_ADB_SERIAL=<adb serial>
+  DROIDCAM_SIZE=320x240
+USAGE
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --mode)
+      MODE="${2:-}"
+      shift 2
+      ;;
+    --video-device)
+      VIDEO_DEVICE="${2:-}"
+      shift 2
+      ;;
+    --wifi-ip)
+      WIFI_IP="${2:-}"
+      shift 2
+      ;;
+    --wifi-port)
+      WIFI_PORT="${2:-}"
+      shift 2
+      ;;
+    --adb-port)
+      ADB_PORT="${2:-}"
+      shift 2
+      ;;
+    --adb-serial)
+      ADB_SERIAL="${2:-}"
+      shift 2
+      ;;
+    --size)
+      DROIDCAM_SIZE="${2:-}"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      usage
+      exit 2
+      ;;
+  esac
+done
+
+if [[ ! -r "$DROIDCAM_ENV/bin/activate" ]]; then
+  echo "DroidCam environment not found: $DROIDCAM_ENV" >&2
+  exit 1
+fi
+
+VIDEO_DEVICE="$(/home/gyul/robot_face_system/scripts/resolve_droidcam_video_device "$VIDEO_DEVICE")"
+
+# shellcheck disable=SC1091
+source "$DROIDCAM_ENV/bin/activate" >/dev/null
+export PATH="$DROIDCAM_ENV/bin:$DROIDCAM_ENV/tools/platform-tools:$PATH"
+
+case "$MODE" in
+  usb|adb)
+    if [[ "$ADB_SERIAL" == "__auto__" || "$ADB_SERIAL" == "auto" ]]; then
+      ADB_SERIAL=""
+    fi
+    if [[ -n "$ADB_SERIAL" ]]; then
+      export ANDROID_SERIAL="$ADB_SERIAL"
+    fi
+    exec "$DROIDCAM_ENV/bin/droidcam-cli" -v -nocontrols -dev="$VIDEO_DEVICE" -size="$DROIDCAM_SIZE" adb "$ADB_PORT"
+    ;;
+  wifi|ip)
+    if [[ -z "$WIFI_IP" ]]; then
+      echo "--wifi-ip or DROIDCAM_WIFI_IP is required for Wi-Fi mode" >&2
+      exit 2
+    fi
+    exec "$DROIDCAM_ENV/bin/droidcam-cli" -v -nocontrols -dev="$VIDEO_DEVICE" -size="$DROIDCAM_SIZE" "$WIFI_IP" "$WIFI_PORT"
+    ;;
+  off|false|none)
+    echo "DroidCam connector disabled; sleeping so launch can keep process state explicit."
+    exec sleep infinity
+    ;;
+  *)
+    echo "Unsupported DroidCam mode: $MODE (expected usb or wifi)" >&2
+    exit 2
+    ;;
+esac

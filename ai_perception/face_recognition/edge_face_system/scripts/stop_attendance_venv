@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SERVICE_NAME="robot-face-attendance.service"
+
+if systemctl --user is-active --quiet "$SERVICE_NAME"; then
+  systemctl --user stop "$SERVICE_NAME"
+fi
+
+# Also clean up a stack that was started manually rather than by systemd.
+pkill -TERM -f '/home/gyul/robot_face_system/scripts/run_attendance_venv' 2>/dev/null || true
+pkill -TERM -f '/home/gyul/robot_face_system/scripts/start_globalcam_udp_sender' 2>/dev/null || true
+pkill -TERM -f 'robot_side.udp_camera_sender' 2>/dev/null || true
+pkill -TERM -f 'robot_side.realsense_publisher' 2>/dev/null || true
+pkill -TERM -f '/home/gyul/droidcam-env/bin/droidcam-cli' 2>/dev/null || true
+pkill -TERM -f '/home/gyul/robot_face_system/scripts/droidcam_connector' 2>/dev/null || true
+pkill -TERM -f 'robot_side.camera_publisher' 2>/dev/null || true
+pkill -TERM -f 'pc_side.perception_node' 2>/dev/null || true
+pkill -TERM -f 'pc_side.annotated_snapshot_node' 2>/dev/null || true
+pkill -TERM -f 'pc_side.image_viewer' 2>/dev/null || true
+pkill -TERM -f 'pc_side.result_uploader_node' 2>/dev/null || true
+pkill -TERM -f '/home/gyul/face_system_server.py' 2>/dev/null || true
+
+echo "안면인식, RealSense, GlobalCam 및 영상 창을 종료했습니다."
+
