@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+source /opt/ros/jazzy/setup.bash
+source /home/gyul/turtlebot3_ws/install/setup.bash
+
+audio_device="${TTS_AUDIO_DEVICE:-default}"
+exec ros2 run tb3_tts tts_node --ros-args -p audio_device:="$audio_device"

@@ -1,0 +1,23 @@
+[Unit]
+Description=Safety Announcement TTS Receiver
+After=default.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/gyul
+Environment=ROS_DOMAIN_ID=4
+Environment=RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+Environment=ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
+Environment=ROS_STATIC_PEERS=192.168.40.7;192.168.0.48
+Environment=TTS_AUDIO_DEVICE=hw:1,0
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/gyul/robot_face_system/scripts/run_tb3_tts
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10
+StandardOutput=append:/home/gyul/robot_face_system/logs/systemd_tb3_tts.log
+StandardError=append:/home/gyul/robot_face_system/logs/systemd_tb3_tts.log
+
+[Install]
+WantedBy=default.target

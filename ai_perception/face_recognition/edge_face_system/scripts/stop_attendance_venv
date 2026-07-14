@@ -2,9 +2,14 @@
 set -euo pipefail
 
 SERVICE_NAME="robot-face-attendance.service"
+TTS_SERVICE_NAME="tb3-tts.service"
 
 if systemctl --user is-active --quiet "$SERVICE_NAME"; then
   systemctl --user stop "$SERVICE_NAME"
+fi
+
+if systemctl --user is-active --quiet "$TTS_SERVICE_NAME"; then
+  systemctl --user stop "$TTS_SERVICE_NAME"
 fi
 
 # Also clean up a stack that was started manually rather than by systemd.
@@ -21,5 +26,4 @@ pkill -TERM -f 'pc_side.image_viewer' 2>/dev/null || true
 pkill -TERM -f 'pc_side.result_uploader_node' 2>/dev/null || true
 pkill -TERM -f '/home/gyul/face_system_server.py' 2>/dev/null || true
 
-echo "안면인식, RealSense, GlobalCam 및 영상 창을 종료했습니다."
-
+echo "안면인식, RealSense, GlobalCam, 영상 창 및 안전 안내방송 TTS를 종료했습니다."
