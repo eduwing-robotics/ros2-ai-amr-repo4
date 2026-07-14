@@ -239,6 +239,7 @@ class GlobalCamYoloResultNode(GlobalCamCombinedDetectorNode):
         self.subscription = self.create_subscription(live_msg_type, args.live_topic, self.on_image, qos)
         self.map_line_pub = self.create_publisher(String, args.map_line_topic, 10)
         self.detections_pub = self.create_publisher(String, args.detections_topic, 10)
+        self.turtlebot_goal_pub = self.create_publisher(String, args.turtlebot_goal_topic, 10)
         self.safety_event_pub = self.create_publisher(String, args.event_topic, 10)
         self.alert_pub = self.create_publisher(String, args.alert_topic, 10)
         self.server_object_event_pub = self.create_publisher(String, args.server_object_event_topic, 10)
@@ -249,7 +250,8 @@ class GlobalCamYoloResultNode(GlobalCamCombinedDetectorNode):
         live_mode = "compressed" if args.live_compressed else "raw"
         self.get_logger().info(
             f"Subscribing live={args.live_topic} mode={live_mode}; "
-            f"publishing map_line={args.map_line_topic} detections={args.detections_topic}"
+            f"publishing map_line={args.map_line_topic} detections={args.detections_topic} "
+            f"turtlebot_goals={args.turtlebot_goal_topic}"
         )
 
     def on_image(self, msg: Image | CompressedImage):
@@ -366,6 +368,15 @@ class GlobalCamYoloResultNode(GlobalCamCombinedDetectorNode):
             # Person boxes themselves are not published on GlobalCam.
             person_detections = []
         all_detections = self.enrich_safety_detections(detections + person_detections, map_line)
+        for detection in all_detections:
+            detection['turtlebot_goal_position'] = (
+                self.map_line.turtlebot_goal_position(
+                    detection.get('map_position'),
+                    self.args.turtlebot_goal_offset_x,
+                )
+                if self.map_line is not None
+                else None
+            )
         self.last_safety_detections = all_detections
         event = self.build_safety_event(
             frame,
@@ -435,6 +446,34 @@ class GlobalCamYoloResultNode(GlobalCamCombinedDetectorNode):
             },
         }
         self.detections_pub.publish(String(data=json.dumps(payload, ensure_ascii=False)))
+        goals = []
+        for detection in self.last_safety_detections:
+            goal = detection.get('turtlebot_goal_position')
+            if goal is None:
+                continue
+            goals.append(
+                {
+                    'class': detection.get('class'),
+                    'confidence': detection.get('confidence'),
+                    'source_coordinate': detection.get('map_position'),
+                    'goal_coordinate': goal,
+                }
+            )
+        if goals:
+            self.turtlebot_goal_pub.publish(
+                String(
+                    data=json.dumps(
+                        {
+                            'schema_version': 'globalcam_turtlebot_goal_coordinates.v1',
+                            'created_at': utc_now_iso(),
+                            'camera_id': self.args.camera_id,
+                            'source_topic': self.args.live_topic,
+                            'goals': goals,
+                        },
+                        ensure_ascii=False,
+                    )
+                )
+            )
 
     def server_event_type(self, class_name: str) -> str | None:
         normalized = str(class_name).strip().lower().replace("-", "_")
@@ -587,6 +626,8 @@ def parse_args():
     parser.add_argument("--event-topic", default="/globalcam/object_map/events")
     parser.add_argument("--alert-topic", default="/globalcam/turtlebot_proximity/alerts")
     parser.add_argument("--server-object-event-topic", default="/globalcam/server/object_events")
+    parser.add_argument("--turtlebot-goal-topic", default="/globalcam/turtlebot_goal/coordinates")
+    parser.add_argument("--turtlebot-goal-offset-x", type=float, default=0.3)
     parser.add_argument("--image-topic", default="/globalcam/live/image")
     parser.add_argument("--device-id", default="edge-dev-001")
     parser.add_argument("--camera-id", default="globalcam-001")
@@ -621,7 +662,7 @@ def parse_args():
     parser.add_argument("--person-roi-expand", type=float, default=1.6)
     parser.add_argument("--person-roi-max-count", type=int, default=8)
     parser.add_argument("--server-required-consecutive", type=int, default=10)
-    parser.add_argument("--server-required-duration-sec", type=float, default=10.0)
+    parser.add_argument("--server-required-duration-sec", type=float, default=5.0)
     parser.add_argument("--server-pixel-tolerance", type=float, default=80.0)
     parser.add_argument("--server-detection-gap-sec", type=float, default=5.0)
     parser.add_argument("--server-track-stale-sec", type=float, default=12.0)

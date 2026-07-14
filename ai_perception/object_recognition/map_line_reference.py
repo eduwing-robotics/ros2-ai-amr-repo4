@@ -231,6 +231,46 @@ class MapLineReference:
         detection['map_reference_px'] = self.round_point(reference_px)
         detection['map_position'] = self.project_point(reference_px, map_line)
 
+    def turtlebot_goal_position(
+        self,
+        map_position: dict[str, Any] | None,
+        offset_x: float,
+    ) -> dict[str, Any] | None:
+        """Return an approach point on the opposite half of the mapped area."""
+        if not isinstance(map_position, dict) or not map_position.get('inside'):
+            return None
+
+        try:
+            source_x = float(map_position['x'])
+            source_y = float(map_position['y'])
+        except (KeyError, TypeError, ValueError):
+            return None
+
+        corners = self.real_map_corners()
+        top_x = (float(corners['TL'][0]) + float(corners['TR'][0])) / 2.0
+        bottom_x = (float(corners['BL'][0]) + float(corners['BR'][0])) / 2.0
+        half_x = (top_x + bottom_x) / 2.0
+        lower_half = source_x < half_x if bottom_x < top_x else source_x > half_x
+        toward_top = 1.0 if top_x >= bottom_x else -1.0
+        applied_offset = toward_top * abs(float(offset_x))
+        if not lower_half:
+            applied_offset *= -1.0
+
+        min_x = min(point[0] for point in corners.values())
+        max_x = max(point[0] for point in corners.values())
+        goal_x = min(max(source_x + applied_offset, min_x), max_x)
+        goal_y = source_y
+        return {
+            'x': round(goal_x, 3),
+            'y': round(goal_y, 3),
+            'map_xy': [round(goal_x, 3), round(goal_y, 3)],
+            'unit': 'map',
+            'source_map_xy': [round(source_x, 3), round(source_y, 3)],
+            'offset_x': round(goal_x - source_x, 3),
+            'source_region': 'lower_half' if lower_half else 'upper_half',
+            'map_half_x': round(half_x, 3),
+        }
+
     def draw(self, frame: np.ndarray, map_line: dict[str, Any], draw_markers: bool = True) -> None:
         square_points = map_line.get('_square_points_np')
         if square_points is None and map_line.get('square_corners_px') is not None:
