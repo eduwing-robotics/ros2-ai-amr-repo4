@@ -2,6 +2,7 @@
 set -euo pipefail
 
 SERVICE_NAME="robot-face-attendance.service"
+TTS_SERVICE_NAME="tb3-tts.service"
 DROIDCAM_SETUP="/home/gyul/droidcam-env/scripts/setup-kernel.sh"
 DROIDCAM_RESOLVER="/home/gyul/robot_face_system/scripts/resolve_droidcam_video_device"
 
@@ -16,16 +17,15 @@ if ! "$DROIDCAM_RESOLVER" auto >/dev/null 2>&1; then
   "$DROIDCAM_SETUP" 640 480
 fi
 
-systemctl --user reset-failed "$SERVICE_NAME" >/dev/null 2>&1 || true
+systemctl --user reset-failed "$SERVICE_NAME" "$TTS_SERVICE_NAME" >/dev/null 2>&1 || true
 
-systemctl --user start "$SERVICE_NAME"
+systemctl --user start "$SERVICE_NAME" "$TTS_SERVICE_NAME"
 
-if systemctl --user is-active --quiet "$SERVICE_NAME"; then
-  echo "안면인식, RealSense, GlobalCam 및 영상 창을 시작했습니다."
+if systemctl --user is-active --quiet "$SERVICE_NAME" && systemctl --user is-active --quiet "$TTS_SERVICE_NAME"; then
+  echo "안면인식, RealSense, GlobalCam, 영상 창 및 안전 안내방송 TTS를 시작했습니다."
   echo "웹 화면: http://127.0.0.1:8090"
 else
-  echo "안면인식 서비스 시작에 실패했습니다." >&2
-  systemctl --user status "$SERVICE_NAME" --no-pager >&2
+  echo "안면인식 또는 안전 안내방송 TTS 서비스 시작에 실패했습니다." >&2
+  systemctl --user status "$SERVICE_NAME" "$TTS_SERVICE_NAME" --no-pager >&2
   exit 1
 fi
-
