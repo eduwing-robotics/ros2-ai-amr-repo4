@@ -6,8 +6,8 @@
 운영 View를 채우기 위한 Mock 데이터는 사용하지 않는다. 응답이 없거나
 필드가 누락된 경우 임의 값을 생성하지 않고 미수신 또는 알 수 없음 상태로 남긴다.
 
-이 문서의 주소는 공유본 기본값인 `127.0.0.1:8000` 기준이다. 실제 환경의
-호스트, TLS, 인증과 접근 제어는 배포 설정에서 별도로 구성해야 한다.
+이 문서에는 연동에 사용하는 상대 경로만 표시한다. 실제 환경의 호스트,
+TLS, 인증과 접근 제어는 배포 설정에서 별도로 구성해야 한다.
 
 ## REST API
 
@@ -26,7 +26,7 @@
 
 ## Control WebSocket
 
-기본 연결은 `ws://127.0.0.1:8000/ws/control-tower`다. 수신 envelope의
+관제 WebSocket 경로는 `/ws/control-tower`다. 수신 envelope의
 `type`, `event_type`, `event_name` 또는 `event` 필드에서 이벤트 유형을
 판별하고 Unity 메인 스레드 큐를 통해 UI에 적용한다.
 
@@ -45,16 +45,16 @@
 | `command_ack` | 로봇 명령의 승인 또는 실패 결과 |
 | `alert_ack_result` | 이벤트 확인·조치 요청 결과 |
 
-공유본은 전체 수신 JSON을 Console에 출력하지 않는다. 파싱 오류, 연결 상태와
+Unity UI는 전체 수신 JSON을 Console에 출력하지 않는다. 파싱 오류, 연결 상태와
 이벤트 유형처럼 운영에 필요한 비식별 로그만 유지한다.
 
 ## Camera Stream
 
 | 소스 | 기본 URI |
 | --- | --- |
-| Global CCTV | `ws://127.0.0.1:8000/ws/video/global` |
-| TB3-01 | `ws://127.0.0.1:8000/ws/video/1` |
-| TB3-02 | `ws://127.0.0.1:8000/ws/video/2` |
+| Global CCTV | `/ws/video/global` |
+| TB3-01 | `/ws/video/1` |
+| TB3-02 | `/ws/video/2` |
 
 `scr_CameraJpegWebSocketClient`가 WebSocket binary/text payload에서 JPEG
 프레임을 받아 Texture로 적용한다. `scr_ControlTowerCameraStreamManager`는
