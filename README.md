@@ -159,13 +159,17 @@ TurtleBot3 기반 다중 로봇이 물류센터를 자율 순찰하고, 글로�
 
 로봇·관제의 상태 전환과 예외 처리를 구현 전에 정의해, 통합 과정의 상태 충돌을 줄였습니다.
 
-### 출퇴근 얼굴인식
+### Scenario 1. 작업자 출퇴근 얼굴인식
 
-![출퇴근 얼굴인식 상태도](assets/state/robot-state-1.png)
+![작업자 출퇴근 얼굴인식 상태도](assets/state/state-face.png)
 
-### 순찰·이벤트 대응·수동/비상 제어
+### Scenario 2~5. 순찰 및 이벤트 사항 대응
 
-![순찰·이벤트 대응·수동/비상 제어 상태도](assets/state/robot-state-2.png)
+![순찰 및 이벤트 사항 대응 상태도](assets/state/state-patrol.png)
+
+### Scenario 6. 관제 서버 수동 조작 및 긴급 정지
+
+![관제 서버 수동 조작 및 긴급 정지 상태도](assets/state/state-control.png)
 
 ## 10. 물류센터 맵과 순찰 경로
 
@@ -199,9 +203,6 @@ TurtleBot3 기반 다중 로봇이 물류센터를 자율 순찰하고, 글로�
 ```text
 .
 ├── ai_perception/                       # 얼굴·객체인식, 글로벌캠·로봇 카메라 처리
-│   ├── face_recognition/
-│   ├── object_recognition/              # 객체인식 원본
-│   └── object_recognition_fms_integration/ # 서버 연동 최종 인식 소스
 ├── controltower_ui/                     # Unity 기반 통합 관제 UI
 ├── hardware/                            # 마그네틱 충전·지게차 리프트 하드웨어
 ├── server_db/                           # FastAPI, PostgreSQL, FMS, Domain Bridge
