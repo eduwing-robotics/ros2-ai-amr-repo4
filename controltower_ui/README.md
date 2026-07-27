@@ -13,8 +13,8 @@ Unity 2D·3D 공장 화면에 표시합니다. Unity 관제 화면에서 실행�
 서버와 ROS2를 통해 실제 로봇에 적용했습니다.
 
 이 폴더는 팀 통합 프로젝트 중 김성엽이 담당한 Unity Control Tower UI의
-구현 범위와 최종 결과를 소개합니다. 전체 Unity 실행 프로젝트와 원본 소스는
-포함하지 않으며, 최종 화면과 기술 문서를 중심으로 유지합니다.
+구현 범위와 최종 결과를 소개합니다. 전체 Unity 실행 프로젝트는 포함하지 않으며,
+공개용으로 정리한 핵심 C# 스크립트, 최종 화면과 기술 문서를 중심으로 유지합니다.
 
 ## 담당자 및 담당 범위
 
@@ -106,6 +106,19 @@ Unity 제어 명령은 FastAPI 서버와 ROS2를 거쳐 TurtleBot3에 적용했�
 - [문제 해결 과정](docs/04-troubleshooting.md)
 - [공개 및 보안 기준](docs/05-security.md)
 - [문서 및 이미지 구조](docs/06-project-structure.md)
+
+## Unity C# Scripts
+
+Unity ControlTower UI 핵심 스크립트:
+
+- [스크립트 구조](src/README.md)
+- [스크립트 목록](src/SCRIPT_INDEX.md)
+- [의존성 안내](src/DEPENDENCIES.md)
+- [C# 소스 폴더](src/Unity/ControlTower/)
+
+이 저장소에는 Unity 프로젝트 전체가 아니라 ControlTower UI의 핵심 C# 스크립트와
+기술 문서만 포함합니다. Scene, Prefab, 모델, 폰트와 외부 자산은 라이선스와
+저장소 용량을 고려해 포함하지 않습니다.
 
 ## 팀 프로젝트 안내
 
