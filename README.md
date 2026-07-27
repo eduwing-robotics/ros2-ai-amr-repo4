@@ -89,7 +89,58 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 </p>
 
 
-## 7. 운영 시나리오
+## 7. 프로젝트 기술 스택
+
+### 로봇·자율주행
+
+![ROS 2](https://img.shields.io/badge/ROS%202%20Jazzy-22314E?style=for-the-badge&logo=ros&logoColor=white)
+![Nav2](https://img.shields.io/badge/Nav2-22314E?style=for-the-badge)
+![Cartographer](https://img.shields.io/badge/Cartographer-4285F4?style=for-the-badge)
+![AMCL](https://img.shields.io/badge/AMCL-22314E?style=for-the-badge)
+![Cyclone DDS](https://img.shields.io/badge/Cyclone%20DDS-6DB33F?style=for-the-badge)
+![TurtleBot3](https://img.shields.io/badge/TurtleBot3-22314E?style=for-the-badge)
+![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-A22846?style=for-the-badge&logo=raspberrypi&logoColor=white)
+
+### AI·컴퓨터 비전
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Ultralytics YOLO](https://img.shields.io/badge/Ultralytics%20YOLO-111F68?style=for-the-badge)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
+![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
+![InsightFace](https://img.shields.io/badge/InsightFace-4B8BBE?style=for-the-badge)
+![Intel RealSense](https://img.shields.io/badge/Intel%20RealSense-0071C5?style=for-the-badge&logo=intel&logoColor=white)
+
+### 서버·데이터·통신
+
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
+![Alembic](https://img.shields.io/badge/Alembic-00599C?style=for-the-badge)
+![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=for-the-badge)
+![REST API](https://img.shields.io/badge/REST%20API-009688?style=for-the-badge)
+![UDP](https://img.shields.io/badge/UDP%20Video-5C3EE8?style=for-the-badge)
+![Bluetooth](https://img.shields.io/badge/Bluetooth-0082FC?style=for-the-badge&logo=bluetooth&logoColor=white)
+
+### 관제 UI·구현 언어
+
+![Unity](https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white)
+![C Sharp](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=dotnet&logoColor=white)
+![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
+![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)
+
+### 협업·프로젝트 관리
+
+![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)
+![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=confluence&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
+
+- **Jira**로 스프린트, 작업 단위, 일정과 진행 상태를 관리했습니다.
+- **Confluence**로 요구사항, 시나리오, 회의 내용, 인터페이스를 문서화했습니다.
+- **GitHub**으로 소스 코드 버전 관리, 브랜치 기반 작업, Pull Request 검토·병합을 수행했습니다.
+- **Slack**으로 실시간 소통, 작업 공유, 통합 테스트 일정을 조율했습니다.
+
+## 8. 운영 시나리오
 
 ### Scenario 1. 작업자 출퇴근 얼굴인식
 
@@ -138,7 +189,7 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 4. 관제에서 재개 명령을 내리면 로봇은 중단된 임무를 이어서 수행합니다.
 
 
-## 8. 시퀀스 다이어그램
+## 9. 시퀀스 다이어그램
 
 프로젝트의 주요 기능은 사전에 시퀀스 다이어그램으로 역할과 데이터 흐름을 합의한 뒤 구현했습니다.
 
@@ -167,7 +218,7 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 ![Scene 6](assets/sequence/scene6.png)
 
 
-## 9. 상태 다이어그램
+## 10. 상태 다이어그램
 
 로봇·관제의 상태 전환과 예외 처리를 구현 전에 정의해, 통합 과정의 상태 충돌을 줄였습니다.
 
@@ -184,7 +235,7 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 ![관제 서버 수동 조작 및 긴급 정지 상태도](assets/state/state-control.png)
 
 
-## 10. 물류센터 맵과 순찰 경로
+## 11. 물류센터 맵과 순찰 경로
 
 <p align="center">
   <img src="assets/map/factory-map.png" alt="물류센터 맵과 순찰 경로" width="850" />
@@ -197,7 +248,7 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 - 로봇은 충전 구역에서 출발해 웨이포인트를 순찰하며, 장애물 회피·이벤트 대응·충전 복귀 후 임무 재개를 수행합니다.
 
 
-## 11. 프로젝트 타임라인과 협업
+## 12. 프로젝트 타임라인
 
 <p align="center">
   <img src="assets/timeline.png" alt="Jira 프로젝트 타임라인" width="950" />
@@ -205,15 +256,9 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 
 프로젝트 일정과 작업 단위는 Jira로 관리했습니다. 요구사항·시나리오·인터페이스를 먼저 합의하고, 파트별 구현과 통합·검증을 반복하는 방식으로 진행했습니다.
 
-| 협업 도구 | 활용 방식 |
-| --- | --- |
-| Jira | 스프린트·작업 단위·일정·진행 상태 관리 |
-| Confluence | 요구사항, 시나리오, 회의 내용, 인터페이스 문서화 |
-| GitHub | 소스 코드 버전 관리, 브랜치 기반 작업, Pull Request 검토·병합 |
-| Slack | 팀원 간 실시간 소통, 작업 공유, 통합 테스트 조율 |
 
 
-## 12. 소스 구성
+## 13. 소스 구성
 
 ```text
 .
@@ -228,7 +273,7 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 각 구현 파트의 상세 내용은 해당 폴더의 README를 참고하세요.
 
 
-## 13. 보안 및 제외 항목
+## 14. 보안 및 제외 항목
 
 다음 실행 자산과 민감 정보는 저장소에 포함하지 않습니다.
 
