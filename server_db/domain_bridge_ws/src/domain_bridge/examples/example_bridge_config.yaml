@@ -1,0 +1,38 @@
+# 도메인 브릿지 설정 파일
+name: factory_robot_bridge
+
+topics:
+  robot1/robot_status:
+    type: teamproject_interfaces/msg/RobotStatus
+    from_domain: 97
+    to_domain: 73
+  robot1/obstacle_event:
+    type: std_msgs/msg/String
+    from_domain: 97
+    to_domain: 73
+  robot1/camera/image_raw/compressed:
+    type: sensor_msgs/msg/CompressedImage
+    from_domain: 97
+    to_domain: 73
+  robot2/robot_status:
+    type: teamproject_interfaces/msg/RobotStatus
+    from_domain: 55
+    to_domain: 73
+  robot2/obstacle_event:
+    type: std_msgs/msg/String
+    from_domain: 55
+    to_domain: 73
+  robot2/camera/image_raw/compressed:
+    type: sensor_msgs/msg/CompressedImage
+    from_domain: 55
+    to_domain: 73
+  globalcam/image_raw/compressed:
+    type: sensor_msgs/msg/CompressedImage
+    from_domain: 4
+    to_domain: 73
+
+services:
+  robot1/set_mode:
+    type: teamproject_interfaces/srv/SetMode
+    from_domain: 73
+    to_domain: 97

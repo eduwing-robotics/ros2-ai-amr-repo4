@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+PYTHON_BIN="${ROBOT_FACE_PYTHON:-/home/yr/ai_env/bin/python}"
+if [ ! -f "$PYTHON_BIN" ]; then
+    PYTHON_BIN="python3"
+fi
+
+export PYTHONPATH="$PROJECT_DIR:${PYTHONPATH:-}"
+exec "$PYTHON_BIN" -m pc_side.perception_node "$@"

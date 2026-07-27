@@ -1,0 +1,8 @@
+.env
+venv/
+.venv/
+registered_faces/
+app/static/alerts/
+static/alerts/
+app/static/faces/*
+!app/static/faces/.gitkeep

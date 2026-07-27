@@ -1,0 +1,106 @@
+# 도메인 브릿지 설정 파일
+name: factory_robot_bridge
+
+topics:
+  robot1/robot_status:
+    type: teamproject_interfaces/msg/RobotStatus
+    from_domain: 97
+    to_domain: 73
+  robot1/obstacle_event:
+    type: teamproject_interfaces/msg/ObstacleVerdict
+    from_domain: 73
+    to_domain: 97
+  robot1/handover_request:
+    type: std_msgs/msg/Int32
+    from_domain: 97
+    to_domain: 73
+  robot1/safety/detections:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 97
+  robot1/server/safety_events:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 97
+  robot1/cmd_vel:
+    type: geometry_msgs/msg/TwistStamped
+    from_domain: 73
+    to_domain: 97
+  robot1/nav_report:
+    type: std_msgs/msg/String
+    from_domain: 97
+    to_domain: 73
+  robot2/robot_status:
+    type: teamproject_interfaces/msg/RobotStatus
+    from_domain: 88
+    to_domain: 73
+  robot2/obstacle_event:
+    type: teamproject_interfaces/msg/ObstacleVerdict
+    from_domain: 73
+    to_domain: 88
+  robot2/handover_request:
+    type: std_msgs/msg/Int32
+    from_domain: 88
+    to_domain: 73
+  robot2/safety/detections:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 88
+  robot2/server/safety_events:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 88
+  robot2/cmd_vel:
+    type: geometry_msgs/msg/TwistStamped
+    from_domain: 73
+    to_domain: 88
+  robot2/nav_report:
+    type: std_msgs/msg/String
+    from_domain: 88
+    to_domain: 73
+  robot3/robot_status:
+    type: teamproject_interfaces/msg/RobotStatus
+    from_domain: 4
+    to_domain: 73
+  robot3/cmd_vel:
+    type: geometry_msgs/msg/TwistStamped
+    from_domain: 73
+    to_domain: 4
+  globalcam/turtlebot_proximity/alerts:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 97
+  globalcam/turtlebot_proximity/alerts:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 88
+  fire:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 4
+  worker_down:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 4
+  helmet_missing:
+    type: std_msgs/msg/String
+    from_domain: 73
+    to_domain: 4
+
+services:
+  robot1/set_mode:
+    type: teamproject_interfaces/srv/SetMode
+    from_domain: 73
+    to_domain: 97
+  robot1/dispatch_to_event:
+    type: teamproject_interfaces/srv/DispatchToEvent
+    from_domain: 73
+    to_domain: 97
+  robot2/set_mode:
+    type: teamproject_interfaces/srv/SetMode
+    from_domain: 73
+    to_domain: 88
+  robot2/dispatch_to_event:
+    type: teamproject_interfaces/srv/DispatchToEvent
+    from_domain: 73
+    to_domain: 88
