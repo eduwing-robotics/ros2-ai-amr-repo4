@@ -14,11 +14,11 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 
 | 담당자 | 담당 파트 | 주요 기여 |
 | :---: | :---: | --- |
-| 김⁠애⁠리 | 자⁠율⁠주⁠행⁠·⁠하⁠드⁠웨⁠어 | SLAM·Nav2 기반 순찰, 장애물 대응, 자동 충전·로봇 교대, 마그네틱 충전 구조, 지게차 포크·물품 운반 구현 |
-| 송⁠한⁠결 | A⁠I⁠ ⁠P⁠e⁠r⁠c⁠e⁠p⁠t⁠i⁠o⁠n⁠·⁠하⁠드⁠웨⁠어 | 최종 객체인식 통합 모델 채택·고도화, 객체인식 노드와 글로벌캠·로봇 카메라 런처 구현, 얼굴인식·출입 연동, 출입문과 AI 스피커 연동 |
+| 김⁠애⁠리 **(팀장)** | 자⁠율⁠주⁠행⁠·⁠하⁠드⁠웨⁠어 | SLAM·Nav2 기반 순찰, 장애물 대응, 자동 충전·로봇 교대, 마그네틱 충전 구조, 지게차 포크·물품 운반 구현 |
 | 김⁠성⁠엽 | 관⁠제⁠ ⁠G⁠U⁠I⁠ ⁠C⁠o⁠n⁠t⁠r⁠o⁠l⁠ ⁠T⁠o⁠w⁠e⁠r | Unity 기반 Dashboard·Factory·Robot·Map 관제 화면, 실시간 상태·영상·이벤트 표시, 수동 제어 UI 구현 |
-| 유⁠예⁠린 | S⁠e⁠r⁠v⁠e⁠r⁠ ⁠&⁠ ⁠D⁠B | FastAPI·PostgreSQL·ROS 2 연동, 이벤트 큐·자동 배차, WebSocket 관제 연동, 출입·사건·로봇 운용 이력 관리 |
 | 백⁠은⁠주 | A⁠I⁠ ⁠P⁠e⁠r⁠c⁠e⁠p⁠t⁠i⁠o⁠n | 안전모 미착용·쓰러짐·화재 개별 객체인식 모델의 통합을 선행 시도·검증하고, 최종 통합 모델 방향을 마련 |
+| 송⁠한⁠결 | A⁠I⁠ ⁠P⁠e⁠r⁠c⁠e⁠p⁠t⁠i⁠o⁠n⁠·⁠하⁠드⁠웨⁠어 | 최종 객체인식 통합 모델 채택·고도화, 객체인식 노드와 글로벌캠·로봇 카메라 런처 구현, 얼굴인식·출입 연동, 출입문과 AI 스피커 연동 |
+| 유⁠예⁠린 | S⁠e⁠r⁠v⁠e⁠r⁠ ⁠&⁠ ⁠D⁠B | FastAPI·PostgreSQL·ROS 2 연동, 이벤트 큐·자동 배차, WebSocket 관제 연동, 출입·사건·로봇 운용 이력 관리 |
 
 
 ## 2. 프로젝트 주제
@@ -173,7 +173,9 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 
 ### Scenario 1. 작업자 출퇴근 얼굴인식
 
-![작업자 출퇴근 얼굴인식 상태도](assets/state/state-face.png)
+<p align="center">
+  <img src="assets/state/state-face.png" alt="작업자 출퇴근 얼굴인식 상태도" width="680" />
+</p>
 
 ### Scenario 2~5. 순찰 및 이벤트 사항 대응
 
@@ -217,6 +219,8 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
   <img src="assets/timeline.png" alt="Jira 프로젝트 타임라인" width="950" />
 </p>
 
+**프로젝트 기간: 2026년 5월 26일 ~ 2026년 7월 24일**
+
 프로젝트 일정과 작업 단위는 Jira로 관리했습니다. 요구사항·시나리오·인터페이스를 먼저 합의하고, 파트별 구현과 통합·검증을 반복하는 방식으로 진행했습니다.
 
 
@@ -236,6 +240,7 @@ https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
 ### AI·컴퓨터 비전
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![CUDA](https://img.shields.io/badge/CUDA-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
 ![Ultralytics YOLO](https://img.shields.io/badge/Ultralytics%20YOLO-111F68?style=for-the-badge)
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
 ![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
