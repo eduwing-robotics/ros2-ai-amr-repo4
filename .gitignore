@@ -249,6 +249,7 @@ ipython_config.py
 *.md
 !README.md
 !**/README.md
+!**/docs/*.md
 
 *.docx
 *.pptx
