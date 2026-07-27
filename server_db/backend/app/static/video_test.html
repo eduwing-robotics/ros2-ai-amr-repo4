@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TurtleBot 관제 영상 테스트</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background-color: #1e1e1e; color: white; }
+        .container { max-width: 600px; margin: 0 auto; background: #2d2d2d; padding: 20px; border-radius: 10px; }
+        input, button { padding: 10px; margin: 5px 0; font-size: 16px; border-radius: 5px; border: none; }
+        input { width: 300px; }
+        button { cursor: pointer; font-weight: bold; }
+        #connectBtn { background-color: #4CAF50; color: white; }
+        #disconnectBtn { background-color: #f44336; color: white; }
+        #videoScreen {
+            width: 100%; max-width: 320px; height: 240px;
+            background-color: black; border: 3px solid #555;
+            margin-top: 20px; display: block; object-fit: contain;
+        }
+        #status { margin-top: 10px; color: #ffeb3b; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎥 로봇 관제 영상 테스트</h2>
+
+    <input type="text" id="wsUrl" value="ws://127.0.0.1:8000/ws/video/1" placeholder="ws://localhost:8000/ws/video/1">
+    <button id="connectBtn" onclick="connect()">연결</button>
+    <button id="disconnectBtn" onclick="disconnect()">종료</button>
+
+    <div id="status">상태: 연결 대기 중...</div>
+
+    <img id="videoScreen" alt="카메라 영상 대기중..." />
+</div>
+
+<script>
+    let ws;
+    const videoScreen = document.getElementById("videoScreen");
+    const statusText = document.getElementById("status");
+
+    function connect() {
+        const url = document.getElementById("wsUrl").value;
+        ws = new WebSocket(url);
+
+        // ★ 핵심: 서버에서 보내는 데이터를 '바이트(Blob)' 형태로 받겠다고 명시
+        ws.binaryType = "blob";
+
+        ws.onopen = function() {
+            statusText.style.color = "#4CAF50";
+            statusText.innerText = "상태: 🟢 연결됨 (데이터 수신 대기 중...)";
+        };
+
+        ws.onmessage = function(event) {
+            // event.data 에는 서버에서 날아온 JPEG 원본 바이트(Blob)가 들어있습니다.
+            // 브라우저가 이 바이트 데이터를 읽을 수 있게 임시 URL을 만듭니다.
+            const imageUrl = URL.createObjectURL(event.data);
+
+            // img 태그에 이미지를 씌웁니다 (유니티의 Texture2D.LoadImage와 같은 원리)
+            videoScreen.src = imageUrl;
+
+            // 메모리 누수를 막기 위해 이미지가 로딩되면 임시 URL을 삭제합니다.
+            videoScreen.onload = () => {
+                URL.revokeObjectURL(imageUrl);
+            };
+        };
+
+        ws.onclose = function() {
+            statusText.style.color = "#f44336";
+            statusText.innerText = "상태: 🔴 연결 끊김";
+            videoScreen.src = ""; // 화면 초기화
+        };
+
+        ws.onerror = function(error) {
+            console.error("웹소켓 에러 발생: ", error);
+            statusText.style.color = "#f44336";
+            statusText.innerText = "상태: ❌ 에러 발생 (콘솔 확인)";
+        };
+    }
+
+    function disconnect() {
+        if (ws) {
+            ws.close();
+        }
+    }
+</script>
+
+</body>
+</html>

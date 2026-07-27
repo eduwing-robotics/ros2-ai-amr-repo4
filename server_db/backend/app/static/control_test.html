@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>터틀봇 수동 조작 및 상태 변경 테스트 대시보드</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f6f9; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        h2, h3 { color: #1e293b; border-bottom: 2px solid #eaeaea; padding-bottom: 8px; }
+        .flex-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .card { flex: 1; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; }
+        .btn { padding: 10px 16px; font-weight: bold; border-none; border-radius: 6px; cursor: pointer; background: #2563eb; color: white; margin: 4px; }
+        .btn:active { background: #1d4ed8; }
+        .btn-danger { background-color: #dc2626; }
+        .btn-warning { background-color: #eab308; color: black; }
+        .grid-pad { display: grid; grid-template-columns: repeat(3, 70px); gap: 10px; justify-content: center; margin: 20px 0; }
+        .pad-btn { width: 70px; height: 70px; font-weight: bold; background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; user-select: none; }
+        .pad-btn:active { background-color: #cbd5e1; }
+        pre { background: #1e1e1e; color: #f8f8f2; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 13px; max-height: 200px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🤖 닌자거북이 로봇 관제 및 주행 테스트 패널</h2>
+
+    <div class="flex-row">
+        <div class="card">
+            <h3>1. 대상 디바이스 설정</h3>
+            <label>로봇 ID 선택: </label>
+            <select id="robotSelect" style="padding: 6px; border-radius: 4px;">
+                <option value="tb3-01">tb3-01 (1호기)</option>
+                <option value="tb3-02">tb3-02 (2호기)</option>
+                <option value="tb3-03">tb3-03 (3호기)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="flex-row">
+        <div class="card">
+            <h3>2. FSM 상태 변경 서비스 명령</h3>
+            <button class="btn" onclick="sendMode('PATROL_START')">순찰 시작</button>
+            <button class="btn" onclick="sendMode('RESUME')">임무 재개</button>
+            <button class="btn btn-warning" onclick="sendMode('MANUAL_ENTER')">수동 제어 진입</button>
+            <button class="btn" onclick="sendMode('MANUAL_EXIT')">수동 종료</button>
+            <button class="btn" onclick="sendMode('RETURN_TO_CHARGER')">충전 복귀</button>
+            <button class="btn btn-danger" onclick="sendMode('EMERGENCY_STOP')">🚨 긴급 정지</button>
+            <button class="btn" onclick="sendMode('RESET')">리셋 (오류 해제)</button>
+        </div>
+    </div>
+
+    <div class="flex-row">
+        <div class="card" style="text-align: center;">
+            <h3>3. 방향키 주행 조작 (Hold 방식)</h3>
+            <p style="font-size: 13px; color: #64748b;">⚠️ 버튼을 누르고 있는 동안 150ms 간격으로 좌표 명령이 자동 연속 발행됩니다.<br>마우스 버튼을 떼면 안전 정지(0,0) 패킷이 자동 전송됩니다.</p>
+
+            <div class="grid-pad">
+                <div></div>
+                <button class="pad-btn" onpointerdown="startDrive(0.15, 0.0)" onpointerup="stopDrive()">▲<br>전진</button>
+                <div></div>
+                <button class="pad-btn" onpointerdown="startDrive(0.0, 0.5)" onpointerup="stopDrive()">◀<br>좌회전</button>
+                <button class="pad-btn btn-danger" style="color:white;" onclick="sendStopSignal()">■<br>정지</button>
+                <button class="pad-btn" onpointerdown="startDrive(0.0, -0.5)" onpointerup="stopDrive()">▶<br>우회전</button>
+                <div></div>
+                <button class="pad-btn" onpointerdown="startDrive(-0.15, 0.0)" onpointerup="stopDrive()">▼<br>후진</button>
+                <div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-row">
+        <div class="card" style="text-align: center;">
+            <h3>4. 3호기 지게차 리프트 (Hold 방식)</h3>
+            <p style="font-size: 13px; color: #64748b;">3호기를 선택하고 먼저 수동 제어 진입(MANUAL_ENTER) 후 사용하세요. 누르는 동안 10Hz로 명령을 보냅니다.</p>
+            <button class="btn" style="background:#16a34a;" onpointerdown="startDrive(0.0, 0.0, 1.0)" onpointerup="stopDrive()" onpointercancel="stopDrive()" onpointerleave="stopDrive()">▲ 리프트 올림</button>
+            <button class="btn btn-warning" onpointerdown="startDrive(0.0, 0.0, -1.0)" onpointerup="stopDrive()" onpointercancel="stopDrive()" onpointerleave="stopDrive()">▼ 리프트 내림</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📋 실시간 API 송수신 로그 및 결과 트래킹</h3>
+        <pre id="logConsole">대기 중... 명령을 내리면 이곳에 JSON 데이터 패킷이 표시됩니다.</pre>
+    </div>
+</div>
+
+<script>
+    let driveInterval = null;
+    const baseUrl = window.location.origin;
+
+    function log(message, data) {
+        const consoleEl = document.getElementById('logConsole');
+        const timestamp = new Date().toLocaleTimeString();
+        consoleEl.innerText = `[${timestamp}] ${message}\n` + (data ? JSON.stringify(data, null, 2) : '');
+    }
+
+    // FSM 상태 변경 POST 요청
+    async function sendMode(modeStr) {
+        const robotId = document.getElementById('robotSelect').value;
+        const url = `${baseUrl}/api/v1/robots/${robotId}/commands`;
+        const payload = {
+            command: modeStr,
+            operator_id: "TEST_ADMIN",
+            timestamp: new Date().toISOString()
+        };
+
+        log(`[요청 전송] ${url}`, payload);
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            log(`[응답 수신] 상태 코드: ${response.status}`, result);
+        } catch (error) {
+            log(`❌ 통신 실패: ${error.message}`);
+        }
+    }
+
+    // 수동 주행 발행 루프 가동 (데드맨 스위치 워치독 대응)
+    function startDrive(linear, angular, lift = 0.0) {
+        if (driveInterval) clearInterval(driveInterval);
+
+        // 100ms 주기로 서버에 지속 패킷 전송 (로봇의 0.5초 타임아웃 정지 방지)
+        sendTeleop(linear, angular, lift);
+        driveInterval = setInterval(() => {
+            sendTeleop(linear, angular, lift);
+        }, 100);
+    }
+
+    // 마우스 혹은 터치를 뗄 때 루프를 해제하고 즉시 안전 속도 0 발행
+    function stopDrive() {
+        if (driveInterval) {
+            clearInterval(driveInterval);
+            driveInterval = null;
+        }
+        sendStopSignal();
+    }
+
+    function sendStopSignal() {
+        sendTeleop(0.0, 0.0, 0.0);
+    }
+
+    // 수동 주행 속도 토픽 발행 엔드포인트 전송
+    async function sendTeleop(linearX, angularZ, lift = 0.0) {
+        const robotId = document.getElementById('robotSelect').value;
+        // 설계해 두신 텔레옵 주소 혹은 웹소켓 대체 주소로 바인딩
+        const url = `${baseUrl}/api/v1/robots/${robotId}/teleop`;
+        const payload = {
+            linear_x: linearX,
+            angular_z: angularZ,
+            lift: lift
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            if (result.ok) {
+                document.getElementById('logConsole').innerText = `[🤖 실시간 수동 스트리밍 주행 중] linear_x: ${linearX}, angular_z: ${angularZ}`;
+            } else {
+                document.getElementById('logConsole').innerText = `⚠️ [수동 제어 거부됨]\n${result.message}`;
+            }
+        } catch (error) {
+            document.getElementById('logConsole').innerText = `❌ 통신 실패: ${error.message}`;
+            console.error("Teleop Error:", error);
+        }
+    }
+</script>
+</body>
+</html>

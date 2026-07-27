@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unity 관제 웹소켓 테스트</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h2>🤖 로봇 데이터 수신 현황</h2>
+    <div id="messages" style="background: #000; color: #0f0; padding: 10px; height: 400px; overflow-y: scroll; font-family: monospace;"></div>
+
+    <script>
+        // 우리가 만든 FastAPI 웹소켓 주소로 연결!
+        var ws = new WebSocket("ws://localhost:8000/ws/control-tower");
+
+        var messageBox = document.getElementById("messages");
+
+        ws.onopen = function() {
+            messageBox.innerHTML += "<p>✅ 서버와 연결되었습니다. 로봇 데이터를 기다립니다...</p>";
+        };
+
+        // 데이터가 들어올 때마다 화면에 찍어줍니다.
+        ws.onmessage = function(event) {
+            // [CCTV 3] 크롬 개발자 도구(F12) 콘솔에 원본 데이터를 찍어봅니다.
+            console.log("📥 RAW 데이터 수신:", event.data);
+
+            try {
+                var data = JSON.parse(event.data);
+                var log = `[로봇 ${data.robot_id}] 좌표:(${data.x}, ${data.y}) | 배터리:${data.battery}% | 상태:${data.status}`;
+                messageBox.innerHTML += `<p>> ${log}</p>`;
+            } catch(e) {
+                // 에러가 나도 화면에 원본 데이터를 강제로 띄웁니다!
+                messageBox.innerHTML += `<p style="color:red;">❌ 변환 에러 (원본 출력): ${event.data}</p>`;
+            }
+
+            // 스크롤 맨 아래로 고정
+            messageBox.scrollTop = messageBox.scrollHeight;
+        };
+
+        ws.onclose = function() {
+            messageBox.innerHTML += "<p>🔌 서버와 연결이 끊어졌습니다.</p>";
+        };
+    </script>
+</body>
+</html>
