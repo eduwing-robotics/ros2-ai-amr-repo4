@@ -188,3 +188,22 @@ controltower_ui/docs/images 경로에 추가할 예정입니다.
 
 AI 인식, 서버·데이터베이스, 하드웨어와 SLAM·내비게이션 구현은
 저장소의 `ai_perception`, `server_db`, `hardware`, `slam_navigation` 폴더에서 각 담당 내용을 확인할 수 있습니다.
+
+## Source Structure
+
+- [Unity Control Tower scripts](unity/Assets/Project/Scripts/ControlTower)
+- [Unity package configuration](unity/Packages)
+- [Unity project version](unity/ProjectSettings)
+
+## Technical Documents
+
+- [Architecture](docs/architecture.md)
+- [UI Views](docs/ui-views.md)
+- [Integration](docs/integration.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [File Inventory](docs/file-inventory.md)
+- [Security](docs/security.md)
+
+이 폴더는 전체 Unity 실행 프로젝트가 아니라 Unity Control Tower UI 핵심
+소스와 기술 문서를 정리한 공유용 구성입니다. Scene, Prefab, 모델, 폰트와
+대용량 미디어는 포함하지 않습니다.
