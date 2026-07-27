@@ -26,6 +26,16 @@ TurtleBot3 3대로 물류센터를 무인 순찰하는 자율주행 스택입니
 </p>
 
 <p align="center">
+  <img src="docs/images/gif_robotcam.gif" width="440" alt="화재·쓰러짐 감지 순간 (로봇 시점)">
+  <br><em>이벤트 감지 순간 (로봇 시점) — 화재 FIRE 61% · 쓰러짐 FALL 87% (2.5배속)</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/gif_event.gif" width="440" alt="이벤트 출동 전체 흐름">
+  <br><em>전체 흐름 한눈에 — 순찰 → 이벤트 출동 → 복귀 (32배속 타임랩스)</em>
+</p>
+
+<p align="center">
   <img src="docs/images/gif_patrol.gif" width="440" alt="정상 순찰 풀랩과 충전 복귀">
   <br><em>정상 순찰 풀랩 → 충전 복귀 (10배속)</em>
 </p>
