@@ -25,6 +25,11 @@ TurtleBot3 3대로 물류센터를 무인 순찰하는 자율주행 스택입니
   <br><em>충전 교대 — 근접 경보(0.33m) 속에 교차하며 한 대는 충전존으로, 한 대는 순찰 인계</em>
 </p>
 
+<p align="center">
+  <img src="docs/images/gif_patrol.gif" width="440" alt="정상 순찰 풀랩과 충전 복귀">
+  <br><em>정상 순찰 풀랩 → 충전 복귀 (10배속)</em>
+</p>
+
 ## 시스템 구성
 
 ```
