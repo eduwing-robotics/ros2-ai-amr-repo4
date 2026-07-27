@@ -79,50 +79,6 @@ TurtleBot3 기반 다중 로봇이 물류센터를 자율 순찰하고, 글로�
   <img src="assets/architecture/hardware-architecture.png" alt="하드웨어 아키텍처" width="900" />
 </p>
 
-### 저장소 구성요소 연동 구조
-
-```mermaid
-flowchart LR
-    subgraph Field[물류센터 현장]
-        GC[글로벌캠]
-        R1[TB3-01 순찰]
-        R2[TB3-02 순찰·교대]
-        R3[TB3-03 지게차 리프트]
-        Gate[자동문·출입구]
-    end
-
-    subgraph AI[AI Perception]
-        YOLO[객체인식]
-        Face[얼굴인식·QR]
-        Map[글로벌캠 좌표 보정]
-    end
-
-    subgraph Platform[통합 운영 플랫폼]
-        Bridge[ROS 2 Domain Bridge]
-        FMS[FMS 서버 FastAPI + ROS 2]
-        DB[(PostgreSQL)]
-        UI[Unity Control Tower]
-        TTS[TTS 경보]
-    end
-
-    GC --> YOLO
-    R1 --> YOLO
-    R2 --> YOLO
-    YOLO --> Face
-    YOLO --> Map
-    R1 <--> Bridge
-    R2 <--> Bridge
-    R3 <--> Bridge
-    Gate <--> FMS
-    Face --> FMS
-    Map --> FMS
-    Bridge <--> FMS
-    FMS <--> DB
-    FMS --> UI
-    FMS --> TTS
-    UI --> FMS
-```
-
 ## 7. 운영 시나리오
 
 ### Scenario 1. 작업자 출퇴근 얼굴인식
@@ -141,7 +97,7 @@ flowchart LR
 3. 동적 장애물은 즉시 정지한 뒤 5초간 대기하고, 사라지면 순찰을 재개합니다.
 4. 순찰 중 작업장 환경을 모니터링하며, 완료 후 충전 장소에서 다음 임무를 대기합니다.
 
-### Scenario 3. 안전모 미착용 감지
+### Scenario 3. 안전모 미착용 감지 (위반사항)
 
 1. 글로벌 관제 카메라 또는 순찰 로봇이 작업자를 촬영합니다.
 2. AI가 안전모 미착용을 규정 위반으로 판단합니다.
@@ -149,7 +105,7 @@ flowchart LR
 4. 발생 시간·위치·증거를 서버에 저장하고 관제에 경고를 전송합니다.
 5. TTS로 안전모 착용을 안내하고, 관제자가 확인 후 재개 명령을 내리면 순찰을 재개합니다.
 
-### Scenario 4. 응급 사항 감지 — 화재·작업자 쓰러짐
+### Scenario 4. 응급 사항 감지 (화재, 작업자 쓰러짐)
 
 1. 글로벌 관제 카메라 또는 순찰 로봇이 현장을 촬영합니다.
 2. AI가 쓰러짐 또는 화재를 감지하면 응급 상황으로 판단합니다.
@@ -175,27 +131,27 @@ flowchart LR
 
 프로젝트의 주요 기능은 사전에 시퀀스 다이어그램으로 역할과 데이터 흐름을 합의한 뒤 구현했습니다.
 
-### Scene 1
+### Scenario 1. 작업자 출퇴근 얼굴인식
 
 ![Scene 1](assets/sequence/scene1.png)
 
-### Scene 2
+### Scenario 2. 물류센터 순찰
 
 ![Scene 2](assets/sequence/scene2.png)
 
-### Scene 3
+### Scenario 3. 안전모 미착용 감지 (위반사항)
 
 ![Scene 3](assets/sequence/scene3.png)
 
-### Scene 4
+### Scenario 4. 응급 사항 감지 (화재, 작업자 쓰러짐)
 
 ![Scene 4](assets/sequence/scene4.png)
 
-### Scene 5
+### Scenario 5. 자동 충전과 순찰 교대
 
 ![Scene 5](assets/sequence/scene5.png)
 
-### Scene 6
+### Scenario 6. 관제 서버 수동 조작 및 긴급 정지
 
 ![Scene 6](assets/sequence/scene6.png)
 
