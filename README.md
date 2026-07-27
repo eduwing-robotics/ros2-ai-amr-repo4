@@ -18,52 +18,6 @@ TurtleBot3 기반 다중 로봇이 물류센터를 자율 순찰하며, 글로�
   <img src="docs/images/architecture/hardware-architecture-final.png" alt="하드웨어 아키텍처" width="800" />
 </p>
 
-### 저장소 구성요소 연동 구조
-
-최종 아키텍처 이미지의 구현 요소를 저장소 구성 기준으로 단순화한 연동 구조입니다.
-
-```mermaid
-flowchart LR
-    subgraph Field[물류센터 현장]
-        GC[글로벌캠]
-        R1[TB3-01<br/>순찰]
-        R2[TB3-02<br/>순찰·교대]
-        R3[TB3-03<br/>지게차 리프트]
-        Gate[자동문 / 출입구]
-    end
-
-    subgraph AI[AI Perception]
-        YOLO[객체인식<br/>화재·쓰러짐·안전모]
-        Face[얼굴인식 / QR]
-        Map[글로벌캠 좌표 보정]
-    end
-
-    subgraph Platform[통합 운영 플랫폼]
-        Bridge[ROS 2 Domain Bridge]
-        FMS[FMS 서버<br/>FastAPI + ROS 2]
-        DB[(PostgreSQL)]
-        UI[Unity Control Tower]
-        TTS[TTS 경보]
-    end
-
-    GC --> YOLO
-    R1 --> YOLO
-    R2 --> YOLO
-    YOLO --> Face
-    YOLO --> Map
-    R1 <--> Bridge
-    R2 <--> Bridge
-    R3 <--> Bridge
-    Gate <--> FMS
-    Face --> FMS
-    Map --> FMS
-    Bridge <--> FMS
-    FMS <--> DB
-    FMS --> UI
-    FMS --> TTS
-    UI --> FMS
-```
-
 ## 프로젝트 배경
 
 스마트 물류센터에서는 반복 순찰, 안전모 미착용, 화재, 작업자 쓰러짐과 같은 상황을 지속적으로 확인해야 합니다. 고정 CCTV와 사람 중심 감시는 사각지대와 피로도 문제를 가지므로, 본 프로젝트는 다음을 하나의 흐름으로 통합했습니다.
