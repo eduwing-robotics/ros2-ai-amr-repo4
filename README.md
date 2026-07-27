@@ -4,12 +4,10 @@
 
 TurtleBot3 기반 다중 로봇이 물류센터를 자율 순찰하고, 글로벌캠·로봇 카메라 AI가 위험 상황을 감지하며, 통합 관제에서 현장 대응까지 수행하는 스마트 팩토리 프로젝트입니다.
 
-<p align="center">
-  <a href="assets/promo/팀프로젝트_홍보영상.mp4">
-    <img src="assets/promo/promo-thumb.png" alt="프로젝트 홍보 영상" width="720" />
-  </a>
-  <br><em>▶ 프로젝트 홍보 영상 (3분 56초) — 이미지를 클릭하면 재생됩니다</em>
-</p>
+
+
+https://github.com/user-attachments/assets/9515e092-fe38-49e2-8ad9-e32ea8fec35e
+
 
 
 ## 1. 팀 구성 및 역할
