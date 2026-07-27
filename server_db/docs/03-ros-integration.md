@@ -34,12 +34,12 @@ ROS 콜백은 ROS 백그라운드 스레드에서 실행됩니다. 콜백은 Fas
 ```mermaid
 sequenceDiagram
     participant ROS as ROS 2 콜백 스레드
-    participant Loop as FastAPI asyncio 루프
+    participant AsyncLoop as FastAPI asyncio 루프
     participant WS as WebSocket 매니저
     participant UI as 통합 관제 UI
 
-    ROS->>Loop: call_soon_threadsafe(create_task(...))
-    Loop->>WS: JSON 또는 프레임 바이트 브로드캐스트
+    ROS->>AsyncLoop: call_soon_threadsafe(create_task(...))
+    AsyncLoop->>WS: JSON 또는 프레임 바이트 브로드캐스트
     WS->>UI: WebSocket 메시지 전달
 ```
 
