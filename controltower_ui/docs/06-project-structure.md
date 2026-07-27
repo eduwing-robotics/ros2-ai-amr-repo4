@@ -11,3 +11,4 @@
 | [`05-security.md`](05-security.md) | 공개 범위와 개인정보 보호 기준을 표시합니다. |
 | [`images/overview/`](images/overview/) | 대표 전체 관제 화면을 유지합니다. |
 | [`images/views/`](images/views/) | Dashboard, Factory, Robot과 Map 화면을 유지합니다. |
+| [`../src/`](../src/) | 공개용으로 정리한 Unity ControlTower 핵심 C# 스크립트와 안내 문서를 유지합니다. |
