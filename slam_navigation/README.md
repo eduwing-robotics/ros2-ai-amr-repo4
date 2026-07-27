@@ -21,7 +21,7 @@ TurtleBot3 3대로 물류센터를 무인 순찰하는 자율주행 스택입니
 | 검증 체크리스트 | 45항목 구현·검증 | 파트 간 인터페이스 계약 v1.4 기준 |
 
 <p align="center">
-  <img src="docs/images/gif_handover.gif" width="380" alt="2대 자동 교대">
+  <img src="docs/images/gif_handover.gif" width="300" alt="2대 자동 교대">
   <br><em>충전 교대 — 근접 경보(0.33m) 속에 교차하며 한 대는 충전존으로, 한 대는 순찰 인계</em>
 </p>
 
