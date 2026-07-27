@@ -8,7 +8,12 @@ Unity 기반 스마트 공장 순찰 로봇 통합 관제 UI입니다.
 Unity 2D·3D 공장 화면에 표시하고,
 Unity 관제 화면에서 실제 로봇 제어 명령을 전달하도록 구현했습니다.
 
-이 문서는 팀 전체 프로젝트가 아닌 김성엽이 담당한 Unity Control Tower UI의 구현 범위를 소개합니다.
+이 폴더는 팀 통합 프로젝트 중
+김성엽이 담당한 Unity Control Tower UI의
+구현 범위와 최종 결과를 소개합니다.
+
+전체 Unity 실행 프로젝트와 원본 소스는 포함하지 않으며,
+최종 화면, 시스템 구조, 서버 연동과 문제 해결 내용을 중심으로 공유합니다.
 
 ## 담당자 및 담당 범위
 
@@ -24,9 +29,17 @@ Unity 관제 화면에서 실제 로봇 제어 명령을 전달하도록 구현�
 - TB3-03 지게차 리프트 및 팔레트 운반 시각화
 - 화면 전환, 경로, 카메라 상태 유지 안정화
 
-## 주요 기능
+## 최종 관제 화면
+
+![Control Tower Overview](docs/images/controltower-overview.png)
+
+## 주요 화면
 
 ### Dashboard View
+
+![Dashboard View](docs/images/dashboard-view.png)
+
+공장 운영 상태, 로봇 상태, 출입 현황, 카메라·AI와 시스템 상태를 요약하는 화면입니다.
 
 - 공장 운영 현황 요약
 - 선택 로봇 상태와 배터리
@@ -36,6 +49,10 @@ Unity 관제 화면에서 실제 로봇 제어 명령을 전달하도록 구현�
 
 ### Factory View
 
+![Factory View](docs/images/factory-view.png)
+
+실제 로봇 위치와 공장 설비를 Unity 2D·3D 가상 공장에 표시하는 화면입니다.
+
 - 2D 공장맵
 - 3D 상단·정면·측면 시점
 - 로봇과 설비 위치 표시
@@ -43,6 +60,10 @@ Unity 관제 화면에서 실제 로봇 제어 명령을 전달하도록 구현�
 - 이벤트 위치와 팝업 표시
 
 ### Robot View
+
+![Robot View](docs/images/robot-view.png)
+
+선택 로봇 상태, 명령 응답과 수동 제어 기능을 제공합니다.
 
 - 선택 로봇의 현재 동작 상태
 - 배터리·속도·위치
@@ -53,6 +74,10 @@ Unity 관제 화면에서 실제 로봇 제어 명령을 전달하도록 구현�
 
 ### Map Status View
 
+![Map Status View](docs/images/map-status-view.png)
+
+서버에서 받은 로봇 위치, Waypoint와 Route 진행 상태를 표시합니다.
+
 - 로봇 위치와 방향
 - 현재·다음·완료 Waypoint
 - 현재 주행 구간
@@ -61,6 +86,10 @@ Unity 관제 화면에서 실제 로봇 제어 명령을 전달하도록 구현�
 
 ### Camera·AI View
 
+보안 기준을 충족하는 최종 캡처를 선정한 뒤 추가할 예정입니다.
+
+Global CCTV와 TB3 카메라, 화재·쓰러짐·안전모 미착용 감지 결과를 표시합니다.
+
 - Global CCTV
 - TB3-01 및 TB3-02 카메라
 - 안전모 미착용 감지
@@ -68,6 +97,12 @@ Unity 관제 화면에서 실제 로봇 제어 명령을 전달하도록 구현�
 - 쓰러짐 감지
 - 이벤트 정보와 현장 스냅샷
 - 실제 영상 수신 상태 표시
+
+### 안전 이벤트 처리
+
+개인정보와 얼굴이 노출되지 않은 최종 이벤트 화면을 선정한 뒤 추가할 예정입니다.
+
+이벤트 수신, Popup, 현장 이미지 확인, 조치 상태와 운영 로그 반영 흐름을 제공합니다.
 
 ## 시스템 연동 구조
 
@@ -163,20 +198,14 @@ View 재진입 시 로봇이 이전 위치 또는 초기 위치에 표시됨
 - Nav2
 - SLAM
 
-## 대표 화면
+## 기술 문서
 
-대표 화면 이미지는 최종 캡처 후
-controltower_ui/docs/images 경로에 추가할 예정입니다.
-
-예정 이미지:
-
-- controltower-overview.png
-- dashboard-view.png
-- factory-view.png
-- robot-view.png
-- map-status-view.png
-- camera-ai-view.png
-- safety-event.png
+- [시스템 구조](docs/architecture.md)
+- [화면 구성](docs/ui-views.md)
+- [서버 연동](docs/integration.md)
+- [문제 해결](docs/troubleshooting.md)
+- [문서 구조](docs/project-structure.md)
+- [공개 및 보안 기준](docs/security.md)
 
 ## 시연 영상
 
@@ -188,22 +217,3 @@ controltower_ui/docs/images 경로에 추가할 예정입니다.
 
 AI 인식, 서버·데이터베이스, 하드웨어와 SLAM·내비게이션 구현은
 저장소의 `ai_perception`, `server_db`, `hardware`, `slam_navigation` 폴더에서 각 담당 내용을 확인할 수 있습니다.
-
-## Source Structure
-
-- [Unity Control Tower scripts](unity/Assets/Project/Scripts/ControlTower)
-- [Unity package configuration](unity/Packages)
-- [Unity project version](unity/ProjectSettings)
-
-## Technical Documents
-
-- [Architecture](docs/architecture.md)
-- [UI Views](docs/ui-views.md)
-- [Integration](docs/integration.md)
-- [Troubleshooting](docs/troubleshooting.md)
-- [File Inventory](docs/file-inventory.md)
-- [Security](docs/security.md)
-
-이 폴더는 전체 Unity 실행 프로젝트가 아니라 Unity Control Tower UI 핵심
-소스와 기술 문서를 정리한 공유용 구성입니다. Scene, Prefab, 모델, 폰트와
-대용량 미디어는 포함하지 않습니다.
