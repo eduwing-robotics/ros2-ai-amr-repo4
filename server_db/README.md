@@ -13,6 +13,8 @@ FMS(Factory Management System) 서버는 AI가 감지한 현장 이벤트를 받
 
 단순한 API 서버가 아니라 **AI 비전 · 로봇 제어 · 데이터베이스 · 관제 UI를 연결하는 운영 판단 계층**입니다.
 
+담당: 유예린
+
 ## 시스템 구조
 
 ```mermaid
