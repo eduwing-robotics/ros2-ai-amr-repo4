@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 | 담당자 | 담당 파트 | 주요 기여 |
 | :---: | :---: | --- |
-| 김⁠애⁠리 **(팀장)** | 자⁠율⁠주⁠행⁠·⁠하⁠드⁠웨⁠어 | SLAM·Nav2 기반 순찰, 장애물 대응, 자동 충전·로봇 교대, 마그네틱 충전 구조, 지게차 포크·물품 운반 구현 |
+| 김⁠애⁠리 (팀장) | 자⁠율⁠주⁠행⁠·⁠하⁠드⁠웨⁠어 | SLAM·Nav2 기반 순찰, 장애물 대응, 자동 충전·로봇 교대, 마그네틱 충전 구조, 지게차 포크·물품 운반 구현 |
 | 김⁠성⁠엽 | 관⁠제⁠ ⁠G⁠U⁠I⁠ ⁠C⁠o⁠n⁠t⁠r⁠o⁠l⁠ ⁠T⁠o⁠w⁠e⁠r | Unity 기반 Dashboard·Factory·Robot·Map 관제 화면, 실시간 상태·영상·이벤트 표시, 수동 제어 UI 구현 |
 | 백⁠은⁠주 | A⁠I⁠ ⁠P⁠e⁠r⁠c⁠e⁠p⁠t⁠i⁠o⁠n | 안전모 미착용·쓰러짐·화재 개별 객체인식 모델의 통합을 선행 시도·검증하고, 최종 통합 모델 방향을 마련 |
 | 송⁠한⁠결 | A⁠I⁠ ⁠P⁠e⁠r⁠c⁠e⁠p⁠t⁠i⁠o⁠n⁠·⁠하⁠드⁠웨⁠어 | 최종 객체인식 통합 모델 채택·고도화, 객체인식 노드와 글로벌캠·로봇 카메라 런처 구현, 얼굴인식·출입 연동, 출입문과 AI 스피커 연동 |
@@ -238,12 +238,26 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 ![Cartographer](https://img.shields.io/badge/Cartographer-4285F4?style=for-the-badge)
 ![AMCL](https://img.shields.io/badge/AMCL-22314E?style=for-the-badge)
 ![Cyclone DDS](https://img.shields.io/badge/Cyclone%20DDS-6DB33F?style=for-the-badge)
+
+### 하드웨어
+
 ![TurtleBot3](https://img.shields.io/badge/TurtleBot3-22314E?style=for-the-badge)
 ![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-A22846?style=for-the-badge&logo=raspberrypi&logoColor=white)
 
-### AI·컴퓨터 비전
+### 3D 모델링·설계
+
+![Blender](https://img.shields.io/badge/Blender-F5792A?style=for-the-badge&logo=blender&logoColor=white)
+![FreeCAD](https://img.shields.io/badge/FreeCAD-729FCF?style=for-the-badge&logo=freecad&logoColor=white)
+
+### 사용 언어
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![C Sharp](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=dotnet&logoColor=white)
+![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
+![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)
+
+### AI·컴퓨터 비전
+
 ![CUDA](https://img.shields.io/badge/CUDA-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
 ![Ultralytics YOLO](https://img.shields.io/badge/Ultralytics%20YOLO-111F68?style=for-the-badge)
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
@@ -262,23 +276,21 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 ![UDP](https://img.shields.io/badge/UDP%20Video-5C3EE8?style=for-the-badge)
 ![Bluetooth](https://img.shields.io/badge/Bluetooth-0082FC?style=for-the-badge&logo=bluetooth&logoColor=white)
 
-### 관제 UI·구현 언어
+### 관제 UI
 
 ![Unity](https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white)
-![C Sharp](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=dotnet&logoColor=white)
-![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
-![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)
 
 ### 협업·프로젝트 관리
 
 ![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)
 ![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=confluence&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
 
 - **Jira**로 스프린트, 작업 단위, 일정과 진행 상태를 관리했습니다.
 - **Confluence**로 요구사항, 시나리오, 회의 내용, 인터페이스를 문서화했습니다.
-- **GitHub**으로 소스 코드 버전 관리, 브랜치 기반 작업, Pull Request 검토·병합을 수행했습니다.
+- **Git·GitHub**으로 소스 코드 버전 관리, 브랜치 기반 작업, Pull Request 검토·병합을 수행했습니다.
 - **Slack**으로 실시간 소통, 작업 공유, 통합 테스트 일정을 조율했습니다.
 
 ## 14. 보안 및 제외 항목
@@ -289,7 +301,7 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 - 직원 얼굴 이미지·얼굴 임베딩
 - AI 모델 가중치
 - 런타임 로그, 영상, 사건 캡처 이미지
-- ROS 2 빌드·설치 산출물
+- ROS2 빌드·설치 산출물
 
 ---
 
