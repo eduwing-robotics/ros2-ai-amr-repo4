@@ -69,11 +69,11 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 ### 하드웨어 아키텍처
 
-<img src="assets/architecture/hardware-architecture.png" alt="하드웨어 아키텍처" width="820" />
+<img src="assets/architecture/hardware-architecture.png" alt="하드웨어 아키텍처" width="100%" />
 
 ### 소프트웨어 아키텍처
 
-<img src="assets/architecture/software-architecture.png" alt="소프트웨어 아키텍처" width="820" />
+<img src="assets/architecture/software-architecture.png" alt="소프트웨어 아키텍처" width="100%" />
 
 ## 7. 운영 시나리오
 
@@ -129,27 +129,27 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 ### Scenario 1. 작업자 출퇴근 얼굴인식
 
-<img src="assets/sequence/scene1.png" alt="Scenario 1 시퀀스 다이어그램" width="820" />
+<img src="assets/sequence/scene1.png" alt="Scenario 1 시퀀스 다이어그램" width="100%" />
 
 ### Scenario 2. 물류센터 순찰
 
-<img src="assets/sequence/scene2.png" alt="Scenario 2 시퀀스 다이어그램" width="820" />
+<img src="assets/sequence/scene2.png" alt="Scenario 2 시퀀스 다이어그램" width="100%" />
 
 ### Scenario 3. 안전모 미착용 감지 (위반사항)
 
-<img src="assets/sequence/scene3.png" alt="Scenario 3 시퀀스 다이어그램" width="820" />
+<img src="assets/sequence/scene3.png" alt="Scenario 3 시퀀스 다이어그램" width="100%" />
 
 ### Scenario 4. 응급 사항 감지 (화재, 작업자 쓰러짐)
 
-<img src="assets/sequence/scene4.png" alt="Scenario 4 시퀀스 다이어그램" width="820" />
+<img src="assets/sequence/scene4.png" alt="Scenario 4 시퀀스 다이어그램" width="100%" />
 
 ### Scenario 5. 자동 충전과 순찰 교대
 
-<img src="assets/sequence/scene5.png" alt="Scenario 5 시퀀스 다이어그램" width="820" />
+<img src="assets/sequence/scene5.png" alt="Scenario 5 시퀀스 다이어그램" width="100%" />
 
 ### Scenario 6. 관제 서버 수동 조작 및 긴급 정지
 
-<img src="assets/sequence/scene6.png" alt="Scenario 6 시퀀스 다이어그램" width="820" />
+<img src="assets/sequence/scene6.png" alt="Scenario 6 시퀀스 다이어그램" width="100%" />
 
 ## 9. 상태 다이어그램
 
@@ -157,19 +157,19 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 ### Scenario 1. 작업자 출퇴근 얼굴인식
 
-<img src="assets/state/state-face.png" alt="작업자 출퇴근 얼굴인식 상태도" width="820" />
+<img src="assets/state/state-face.png" alt="작업자 출퇴근 얼굴인식 상태도" width="100%" />
 
 ### Scenario 2~5. 순찰 및 이벤트 사항 대응
 
-<img src="assets/state/state-patrol.png" alt="순찰 및 이벤트 사항 대응 상태도" width="820" />
+<img src="assets/state/state-patrol.png" alt="순찰 및 이벤트 사항 대응 상태도" width="100%" />
 
 ### Scenario 6. 관제 서버 수동 조작 및 긴급 정지
 
-<img src="assets/state/state-control.png" alt="관제 서버 수동 조작 및 긴급 정지 상태도" width="820" />
+<img src="assets/state/state-control.png" alt="관제 서버 수동 조작 및 긴급 정지 상태도" width="100%" />
 
 ## 10. 물류센터 맵과 순찰 경로
 
-<img src="assets/map/factory-map.png" alt="물류센터 맵과 순찰 경로" width="820" />
+<img src="assets/map/factory-map.png" alt="물류센터 맵과 순찰 경로" width="100%" />
 
 - Cartographer SLAM으로 생성한 약 **1.8 × 1.8m** 크기의 창고형 단일 폴리곤 맵입니다.
 - 복도 폭은 약 **40cm**이며, 총 **14개 Waypoint**를 등록했습니다.
@@ -193,7 +193,7 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 ## 12. 프로젝트 타임라인
 
-<img src="assets/timeline.png" alt="Jira 프로젝트 타임라인" width="820" />
+<img src="assets/timeline.png" alt="Jira 프로젝트 타임라인" width="100%" />
 
 **프로젝트 기간: 2026년 5월 26일 ~ 2026년 7월 24일**
 
