@@ -82,15 +82,14 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 ### 하드웨어 아키텍처
 
-<p align="center">
-  <img src="assets/architecture/software-architecture.png" alt="소프트웨어 아키텍처" width="900" />
-</p>
+
+<img width="2880" height="2020" alt="하드웨어아키텍처_컬러_0729" src="https://github.com/user-attachments/assets/4a245edc-9aca-4b7f-9e14-6f151d87951f" />
+
 
 ### 소프트웨어 아키텍처
 
-<p align="center">
-  <img src="assets/architecture/hardware-architecture.png" alt="하드웨어 아키텍처" width="900" />
-</p>
+
+<img width="2236" height="1292" alt="sw_architecture_final" src="https://github.com/user-attachments/assets/66fc3a87-f879-47c3-8d95-d0f53978136c" />
 
 
 ## 7. 운영 시나리오
