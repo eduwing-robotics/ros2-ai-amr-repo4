@@ -22,7 +22,7 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 | 김⁠성⁠엽 | 관⁠제⁠ ⁠G⁠U⁠I⁠ ⁠C⁠o⁠n⁠t⁠r⁠o⁠l⁠ ⁠T⁠o⁠w⁠e⁠r | Unity 기반 Dashboard · Factory · Robot · Map 관제 화면, 실시간 상태 · 영상 · 이벤트 표시, 수동 제어 UI 구현 |
 | 백⁠은⁠주 | A⁠I⁠ ⁠P⁠e⁠r⁠c⁠e⁠p⁠t⁠i⁠o⁠n | 안전모 미착용 · 쓰러짐 · 화재 개별 객체인식 모델의 통합을 선행 시도 · 검증하고, 최종 통합 모델 방향을 마련 |
 | 송⁠한⁠결 | A⁠I⁠ ⁠P⁠e⁠r⁠c⁠e⁠p⁠t⁠i⁠o⁠n⁠ · ⁠하⁠드⁠웨⁠어 | 최종 객체인식 통합 모델 채택 · 고도화, 객체인식 노드와 글로벌 캠 · 로봇 카메라 런처 구현, 안면인식 · 출입 연동, 출입문과 AI 스피커 연동 |
-| 유⁠예⁠린 | S⁠e⁠r⁠v⁠e⁠r⁠ ⁠&⁠ ⁠D⁠B | FastAPI · PostgreSQL·ROS 2 연동, 이벤트 큐 · 자동 배차, WebSocket 관제 연동, 출입 · 사건 · 로봇 운용 이력 관리 |
+| 유⁠예⁠린 | S⁠e⁠r⁠v⁠e⁠r⁠ ⁠&⁠ ⁠D⁠B | FastAPI · PostgreSQL · ROS 2 연동, 이벤트 큐 · 자동 배차, WebSocket 관제 연동, 출입 · 사건 · 로봇 운용 이력 관리 |
 
 
 ## 2. 프로젝트 주제
