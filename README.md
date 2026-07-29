@@ -148,27 +148,39 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 ### Scenario 1. 작업자 출퇴근 얼굴인식
 
-![Scene 1](assets/sequence/scene1.png)
+<p align="center">
+  <img src="assets/sequence/scene1.png" alt="Scenario 1 시퀀스 다이어그램" width="820" />
+</p>
 
 ### Scenario 2. 물류센터 순찰
 
-![Scene 2](assets/sequence/scene2.png)
+<p align="center">
+  <img src="assets/sequence/scene2.png" alt="Scenario 2 시퀀스 다이어그램" width="820" />
+</p>
 
 ### Scenario 3. 안전모 미착용 감지 (위반사항)
 
-![Scene 3](assets/sequence/scene3.png)
+<p align="center">
+  <img src="assets/sequence/scene3.png" alt="Scenario 3 시퀀스 다이어그램" width="820" />
+</p>
 
 ### Scenario 4. 응급 사항 감지 (화재, 작업자 쓰러짐)
 
-![Scene 4](assets/sequence/scene4.png)
+<p align="center">
+  <img src="assets/sequence/scene4.png" alt="Scenario 4 시퀀스 다이어그램" width="820" />
+</p>
 
 ### Scenario 5. 자동 충전과 순찰 교대
 
-![Scene 5](assets/sequence/scene5.png)
+<p align="center">
+  <img src="assets/sequence/scene5.png" alt="Scenario 5 시퀀스 다이어그램" width="820" />
+</p>
 
 ### Scenario 6. 관제 서버 수동 조작 및 긴급 정지
 
-![Scene 6](assets/sequence/scene6.png)
+<p align="center">
+  <img src="assets/sequence/scene6.png" alt="Scenario 6 시퀀스 다이어그램" width="820" />
+</p>
 
 
 ## 9. 상태 다이어그램
@@ -178,16 +190,20 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 ### Scenario 1. 작업자 출퇴근 얼굴인식
 
 <p align="center">
-  <img src="assets/state/state-face.png" alt="작업자 출퇴근 얼굴인식 상태도" width="680" />
+  <img src="assets/state/state-face.png" alt="작업자 출퇴근 얼굴인식 상태도" width="820" />
 </p>
 
 ### Scenario 2~5. 순찰 및 이벤트 사항 대응
 
-![순찰 및 이벤트 사항 대응 상태도](assets/state/state-patrol.png)
+<p align="center">
+  <img src="assets/state/state-patrol.png" alt="순찰 및 이벤트 사항 대응 상태도" width="820" />
+</p>
 
 ### Scenario 6. 관제 서버 수동 조작 및 긴급 정지
 
-![관제 서버 수동 조작 및 긴급 정지 상태도](assets/state/state-control.png)
+<p align="center">
+  <img src="assets/state/state-control.png" alt="관제 서버 수동 조작 및 긴급 정지 상태도" width="820" />
+</p>
 
 
 ## 10. 물류센터 맵과 순찰 경로
