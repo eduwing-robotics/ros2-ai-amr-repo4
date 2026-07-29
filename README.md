@@ -4,15 +4,7 @@
 
 TurtleBot3 기반 다중 로봇이 물류센터를 자율 순찰하고, 글로벌 캠 · 로봇 카메라 AI가 위험 상황을 감지하며, 통합 관제에서 현장 대응까지 수행하는 스마트 팩토리 프로젝트입니다.
 
-
-
-
-
 https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
-
-
-
-
 
 ## 1. 팀 구성 및 역할
 
@@ -24,13 +16,11 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 | 송⁠한⁠결 | A⁠I⁠ ⁠P⁠e⁠r⁠c⁠e⁠p⁠t⁠i⁠o⁠n⁠ · ⁠하⁠드⁠웨⁠어 | 최종 객체인식 통합 모델 채택 · 고도화, 객체인식 노드와 글로벌 캠 · 로봇 카메라 런처 구현, 안면인식 · 출입 연동, 출입문과 AI 스피커 연동 |
 | 유⁠예⁠린 | S⁠e⁠r⁠v⁠e⁠r⁠ ⁠&⁠ ⁠D⁠B | FastAPI · PostgreSQL · ROS 2 연동, 이벤트 큐 · 자동 배차, WebSocket 관제 연동, 출입 · 사건 · 로봇 운용 이력 관리 |
 
-
 ## 2. 프로젝트 주제
 
 **AI 기반 물류센터 안전 · 인력관리 자율주행 로봇 시스템**
 
 자율주행 로봇이 물류센터를 순찰하고, AI가 안전모 미착용 · 화재 · 작업자 쓰러짐을 감지합니다. 감지 결과는 FMS 서버를 거쳐 관제 UI, DB, TTS와 연동되며, 필요할 때는 가용 로봇을 현장으로 자동 파견합니다. 직원은 얼굴인식, 방문자는 QR 기반으로 출입을 관리합니다.
-
 
 ## 3. 주제 선정 이유
 
@@ -41,7 +31,6 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 - **현장 대응 강화**: 글로벌 캠이 발견한 이벤트에 로봇을 파견해 근거리에서 재확인합니다.
 - **통합 운영**: 로봇 · AI · 출입 · 사건 · 영상을 하나의 관제 화면과 DB에서 관리합니다.
 - **인력 관리 확장**: 안면인식 출퇴근과 QR 방문자 출입을 자동문과 연결합니다.
-
 
 ## 4. 사용자 요구사항 (User Requirements)
 
@@ -56,7 +45,6 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 | UR_07 | 로봇은 자동충전 기능이 있어야 한다. |
 | UR_08 | 관리자가 로봇의 상태를 모니터링할 수 있어야 한다. |
 | UR_09 | 로봇은 물품을 운반할 수 있어야 한다. |
-
 
 ## 5. 시스템 요구사항 (System Requirements)
 
@@ -77,24 +65,15 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 | SR_13 | 데이터 조회 | 관제에서 날짜 · 시간 · 종류 기준으로 로그와 이벤트를 조회한다. |
 | SR_14 | 멀티 로봇 협업 | 로봇이 이탈하면 다른 로봇이 순찰 임무를 이어받는다. |
 
-
 ## 6. 시스템 아키텍처
 
 ### 하드웨어 아키텍처
 
-
-<p align="center">
-  <img src="assets/architecture/hardware-architecture.png" alt="하드웨어 아키텍처" width="935" />
-</p>
-
+<img src="assets/architecture/hardware-architecture.png" alt="하드웨어 아키텍처" width="820" />
 
 ### 소프트웨어 아키텍처
 
-
-<p align="center">
-  <img src="assets/architecture/software-architecture.png" alt="소프트웨어 아키텍처" width="900" />
-</p>
-
+<img src="assets/architecture/software-architecture.png" alt="소프트웨어 아키텍처" width="820" />
 
 ## 7. 운영 시나리오
 
@@ -144,7 +123,6 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 3. 긴급 정지 버튼을 누르면 로봇은 즉시 정지하고 현재 임무를 중단합니다.
 4. 관제에서 재개 명령을 내리면 로봇은 중단된 임무를 이어서 수행합니다.
 
-
 ## 8. 시퀀스 다이어그램
 
 프로젝트의 주요 기능은 사전에 시퀀스 다이어그램으로 역할과 데이터 흐름을 합의한 뒤 구현했습니다.
@@ -173,7 +151,6 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 <img src="assets/sequence/scene6.png" alt="Scenario 6 시퀀스 다이어그램" width="820" />
 
-
 ## 9. 상태 다이어그램
 
 로봇 · 관제의 상태 전환과 예외 처리를 구현 전에 정의해, 통합 과정의 상태 충돌을 줄였습니다.
@@ -190,19 +167,15 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 <img src="assets/state/state-control.png" alt="관제 서버 수동 조작 및 긴급 정지 상태도" width="820" />
 
-
 ## 10. 물류센터 맵과 순찰 경로
 
-<p align="center">
-  <img src="assets/map/factory-map.png" alt="물류센터 맵과 순찰 경로" width="850" />
-</p>
+<img src="assets/map/factory-map.png" alt="물류센터 맵과 순찰 경로" width="820" />
 
 - Cartographer SLAM으로 생성한 약 **1.8 × 1.8m** 크기의 창고형 단일 폴리곤 맵입니다.
 - 복도 폭은 약 **40cm**이며, 총 **14개 Waypoint**를 등록했습니다.
 - **충전 구역**은 로봇의 시작 · 복귀 지점, **컨베이어 구역**은 물품 이동 · 이벤트 감지 구역입니다.
 - **팔레트 구역**은 정적 장애물 회피를 검증하고, **출입구 구역**은 얼굴인식 출입 관리를 검증합니다.
 - 로봇은 충전 구역에서 출발해 웨이포인트를 순찰하며, 장애물 회피 · 이벤트 대응 · 충전 복귀 후 임무 재개를 수행합니다.
-
 
 ## 11. 소스 구성
 
@@ -220,15 +193,11 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 ## 12. 프로젝트 타임라인
 
-<p align="center">
-  <img src="assets/timeline.png" alt="Jira 프로젝트 타임라인" width="950" />
-</p>
+<img src="assets/timeline.png" alt="Jira 프로젝트 타임라인" width="820" />
 
 **프로젝트 기간: 2026년 5월 26일 ~ 2026년 7월 24일**
 
 프로젝트 일정과 작업 단위는 Jira로 관리했습니다. 요구사항 · 시나리오 · 인터페이스를 먼저 합의하고, 파트별 구현과 통합 · 검증을 반복하는 방식으로 진행했습니다.
-
-
 
 ## 13. 프로젝트 기술 스택
 
