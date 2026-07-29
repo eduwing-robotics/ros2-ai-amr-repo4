@@ -263,7 +263,7 @@ https://github.com/user-attachments/assets/c5dd488f-bdc3-460c-b717-cb6b5e1a02de
 
 - **Jira**로 스프린트, 작업 단위, 일정과 진행 상태를 관리했습니다.
 - **Confluence**로 요구사항, 시나리오, 회의 내용, 인터페이스를 문서화했습니다.
-- **Git·GitHub**으로 소스 코드 버전 관리, 브랜치 기반 작업, Pull Request 검토·병합을 수행했습니다.
+- **Git·GitHub**으로 소스 코드 버전 관리, 브랜치 기반 작업, Pull Request 검토 · 병합을 수행했습니다.
 - **Slack**으로 실시간 소통, 작업 공유, 통합 테스트 일정을 조율했습니다.
 
 ## 14. 보안 및 제외 항목
