@@ -73,9 +73,11 @@ TurtleBot3 기반 다중 로봇이 물류센터를 자율 순찰하고, 글로�
 
 ### 하드웨어 아키텍처
 
+
 <img src="assets/architecture/hardware-architecture.png" alt="하드웨어 아키텍처" width="100%" />
 
 ### 소프트웨어 아키텍처
+
 
 <img src="assets/architecture/software-architecture.png" alt="소프트웨어 아키텍처" width="100%" />
 
