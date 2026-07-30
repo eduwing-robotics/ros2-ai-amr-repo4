@@ -15,7 +15,7 @@ TurtleBot3 기반 다중 로봇이 물류센터를 자율 순찰하고, 글로�
 | 로봇 | TurtleBot3 Burger 기반 멀티 로봇 (순찰 교대 · 지게차 물품 운반) |
 | 핵심 기능 | 자율 순찰 · 이벤트 자동 파견 · 자동 충전 · 얼굴인식 출입 · 통합 관제 |
 
-▶ **[프로젝트 소개 영상 보기 (YouTube)](https://youtu.be/DD1WVJUMlZ4)**
+▶ **[프로젝트 소개 영상 보기 (YouTube)](https://youtu.be/U24qxTHOJKM)**
 
 ## 1. 팀 구성 및 역할
 
